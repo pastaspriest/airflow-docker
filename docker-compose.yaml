@@ -77,6 +77,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+    - ${AIRFLOW_PROJ_DIR:-.}/sql:/opt/airflow/sql
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -94,6 +95,8 @@ services:
       POSTGRES_DB: airflow
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
@@ -206,7 +209,7 @@ services:
         cpus_available=$$(grep -cE 'cpu[0-9]+' /proc/stat)
         disk_available=$$(df / | tail -1 | awk '{print $$4}')
         warning_resources="false"
-        if (( mem_available < 4000 )) ; then
+        if (( mem_available < 7000 )) ; then
           echo
           echo -e "\033[1;33mWARNING!!!: Not enough memory available for Docker.\e[0m"
           echo "At least 4GB of memory required. You have $$(numfmt --to iec $$((mem_available * one_meg)))"
@@ -234,8 +237,8 @@ services:
           echo "   https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#before-you-begin"
           echo
         fi
-        mkdir -p /sources/logs /sources/dags /sources/plugins
-        chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
+        mkdir -p /sources/logs /sources/dags /sources/plugins /sources/sql
+        chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins,sql}
         exec /entrypoint airflow version
     # yamllint enable rule:line-length
     environment:

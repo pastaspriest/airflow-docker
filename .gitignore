@@ -1,3 +1,6 @@
 /logs/
 .DS_Store
-
+__pycache__
+dags/__pycache__
+dags/.ipynb_checkpoints/
+dags/config.py
