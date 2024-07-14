@@ -163,10 +163,10 @@ FROM stg.уровни_знаний_в_предметной_област;
 -- базы_данных_и_уровень_знаний_сотру
 INSERT INTO ODS.employee_database
 select 
-    substring(название, '[0-9]{1,}')::int AS employee_id
+    substring(название, '.*\[(.*)\]')::int AS employee_id
 ,   CAST("Дата изм." AS DATE) AS update_day
-,   substring("Базы данных", '[0-9]{1,}')::int AS bd_id
-,   substring("Уровень знаний", '[0-9]{1,}')::int AS grade_id
+,   substring("Базы данных", '.*\[(.*)\]')::int AS bd_id
+,   substring("Уровень знаний", '.*\[(.*)\]')::int AS grade_id
 ,	id AS employee_database_id
 ,   CAST(активность AS TEXT) AS activity
 ,	"Сорт." AS sort
@@ -197,10 +197,10 @@ FROM stg.резюмедар;
 --инструменты_и_уровень_знаний_сотр
 INSERT INTO ODS.employee_instrument
 SELECT
-	substring(название, '[0-9]{1,}')::int employee_id
+	substring(название, '.*\[(.*)\]')::int employee_id
 ,	CAST("Дата изм." AS DATE) AS update_day
-,	substring(инструменты, '[0-9]{1,}')::int instrument_id
-,	substring("Уровень знаний", '[0-9]{1,}')::int AS grade_id
+,	substring(инструменты, '.*\[(.*)\]')::int instrument_id
+,	substring("Уровень знаний", '.*\[(.*)\]')::int AS grade_id
 ,	id AS employee_instrument_id
 ,   CAST(активность AS TEXT) AS activity
 ,	"Сорт." AS sort
@@ -217,8 +217,8 @@ SELECT
 ,	id AS employee_industry_id
 ,	"Сорт." AS sort
 ,	CAST("дата" AS DATE) AS date
-,	substring(отрасли, '[0-9]{1,}')::int AS industry_id
-,	substring("Уровень знаний в отрасли", '[0-9]{1,}')::int AS industry_level_id
+,	substring(отрасли, '.*\[(.*)\]')::int AS industry_id
+,	substring("Уровень знаний в отрасли", '.*\[(.*)\]')::int AS industry_level_id
 ,   CAST(активность AS TEXT) AS activity
 FROM stg.опыт_сотрудника_в_отраслях;
 
@@ -231,8 +231,8 @@ SELECT
 ,	id AS employee_platform_id
 ,	"Сорт." AS sort
 ,	CAST("дата" AS DATE) AS date
-,	substring(платформы, '[0-9]{1,}')::int AS platform_id
-,	substring("Уровень знаний", '[0-9]{1,}')::int AS grade_id
+,	substring(платформы, '.*\[(.*)\]')::int AS platform_id
+,	substring("Уровень знаний", '.*\[(.*)\]')::int AS grade_id
 ,   CAST(активность AS TEXT) AS activity
 FROM stg.платформы_и_уровень_знаний_сотруд;
 
@@ -240,13 +240,13 @@ FROM stg.платформы_и_уровень_знаний_сотруд;
 INSERT INTO ODS.employee_ide(employee_id, update_day, employee_ide_id, sort,
 date, ide_id, grade_id, activity)
 SELECT
-	substring(название, '[0-9]{1,}')::int employee_id
+	substring(название, '.*\[(.*)\]')::int employee_id
 ,	CAST("Дата изм." AS DATE) AS update_day
 ,	id AS employee_ide_id
 ,	"Сорт." AS sort
 ,	CAST("дата" AS DATE) AS date
-,	substring("Среды разработки", '[0-9]{1,}')::int AS ide_id
-,	substring("Уровень знаний", '[0-9]{1,}')::int AS grade_id
+,	substring("Среды разработки", '.*\[(.*)\]')::int AS ide_id
+,	substring("Уровень знаний", '.*\[(.*)\]')::int AS grade_id
 ,   CAST(активность AS TEXT) AS activity
 FROM stg.среды_разработки_и_уровень_знаний_;
 
@@ -259,8 +259,8 @@ SELECT
 ,	id AS employee_subject_id
 ,	"Сорт." AS sort
 ,	CAST("дата" AS DATE) AS date
-,	substring("Предментые области", '[0-9]{1,}')::int AS subject_id
-,	substring("Уровень знаний в предметной облас", '[0-9]{1,}')::int AS subject_level_id
+,	substring("Предментые области", '.*\[(.*)\]')::int AS subject_id
+,	substring("Уровень знаний в предметной облас", '.*\[(.*)\]')::int AS subject_level_id
 ,   CAST(активность AS TEXT) AS activity
 FROM stg.опыт_сотрудника_в_предметных_обла;
 
@@ -305,12 +305,12 @@ FROM stg.сотрудники_дар;
 INSERT INTO ODS.employee_technology(employee_id, update_day, employee_technology_id,
 date, technology_id, grade_id, sort, activity)
 SELECT
-	substring(название, '[0-9]{1,}')::int employee_id
+	substring(название, '.*\[(.*)\]')::int employee_id
 ,	CAST("Дата изм." AS DATE) AS update_day
 ,	id AS employee_technology_id
 ,	CAST("дата" AS DATE) AS date
-,   substring(технологии, '[0-9]{1,}')::int AS technology_id
-,	substring("Уровень знаний", '[0-9]{1,}')::int AS grade_id
+,   substring(технологии, '.*\[(.*)\]')::int AS technology_id
+,	substring("Уровень знаний", '.*\[(.*)\]')::int AS grade_id
 ,	"Сорт." AS sort
 ,   CAST(активность AS TEXT) AS activity
 FROM stg.технологии_и_уровень_знаний_сотру;
@@ -319,11 +319,11 @@ FROM stg.технологии_и_уровень_знаний_сотру;
 INSERT INTO ODS.employee_language(employee_id, update_day, employee_language_id, language_id,
 language_level_id, sort, activity)
 SELECT
-	substring(название, '[0-9]{1,}')::int employee_id
+	substring(название, '.*\[(.*)\]')::int employee_id
 ,	CAST("Дата изм." AS DATE) AS update_day
 ,	id AS employee_language_id
-,   substring(язык, '[0-9]{1,}')::int AS language_id
-,   substring("Уровень знаний ин. языка", '[0-9]{1,}')::int AS language_level_id
+,   substring(язык, '.*\[(.*)\]')::int AS language_id
+,   substring("Уровень знаний ин. языка", '.*\[(.*)\]')::int AS language_level_id
 ,	"Сорт." AS sort
 ,   активность AS activity
 FROM stg.языки_пользователей;
@@ -332,11 +332,11 @@ FROM stg.языки_пользователей;
 INSERT INTO ODS.employee_system_type(employee_id, update_day, employee_system_type_id,
 system_type_id, grade_id, date, sort, activity)
 SELECT
-	substring(название, '[0-9]{1,}')::int employee_id
+	substring(название, '.*\[(.*)\]')::int employee_id
 ,	CAST("Дата изм." AS DATE) AS update_day
 ,	id AS employee_system_type_id
-,   substring("Типы систем", '[0-9]{1,}')::int AS system_type_id
-,	substring("Уровень знаний", '[0-9]{1,}')::int AS grade_id
+,   substring("Типы систем", '.*\[(.*)\]')::int AS system_type_id
+,	substring("Уровень знаний", '.*\[(.*)\]')::int AS grade_id
 ,	CAST("дата" AS DATE) AS date
 ,	"Сорт." AS sort
 ,   CAST(активность AS TEXT) AS activity
@@ -346,11 +346,11 @@ FROM stg.типы_систем_и_уровень_знаний_сотру;
 INSERT INTO ODS.employee_framework(employee_id, update_day, employee_framework_id, grade_id,
 framework_id, date, sort, activity)
 SELECT
-	substring(название, '[0-9]{1,}')::int employee_id
+	substring(название, '.*\[(.*)\]')::int employee_id
 ,	CAST("Дата изм." AS DATE) AS update_day
 ,	id AS employee_framework_id
-,	substring("Уровень знаний", '[0-9]{1,}')::int AS grade_id
-,	substring(фреймворки, '[0-9]{1,}')::int AS framework_id
+,	substring("Уровень знаний", '.*\[(.*)\]')::int AS grade_id
+,	substring(фреймворки, '.*\[(.*)\]')::int AS framework_id
 ,	CAST("дата" AS DATE) AS date
 ,	"Сорт." AS sort
 ,   активность AS activity	
@@ -360,11 +360,11 @@ FROM stg.фреймворки_и_уровень_знаний_сотру;
 INSERT INTO ODS.employee_programming_language(employee_id, update_day, employee_programming_language_id,
 grade_id, programming_language_id, date, sort, activity)
 SELECT
-	substring(название, '[0-9]{1,}')::int employee_id
+	substring(название, '.*\[(.*)\]')::int employee_id
 ,	CAST("Дата изм." AS DATE) AS update_day
 ,	id AS employee_programming_language_id
-,	substring("Уровень знаний", '[0-9]{1,}')::int AS grade_id
-,	substring("Языки программирования", '[0-9]{1,}')::int as programming_language_id
+,	substring("Уровень знаний", '.*\[(.*)\]')::int AS grade_id
+,	substring("Языки программирования", '.*\[(.*)\]')::int as programming_language_id
 ,	CAST("дата" AS DATE) AS date
 ,	"Сорт." AS sort
 ,   активность AS activity		
@@ -377,7 +377,7 @@ SELECT
 	"User ID" AS employee_id
 ,	CAST("Дата изм." AS DATE) AS update_day
 ,	id AS employee_education_id
-,	substring("Уровень образование", '[0-9]{1,}')::int AS education_id
+,	substring("Уровень образование", '.*\[(.*)\]')::int AS education_id
 ,	квалификация AS qualification
 ,   активность AS activity	
 ,	"Сорт." AS sort
