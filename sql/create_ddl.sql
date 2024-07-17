@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS DDL.framework (
 
 CREATE TABLE IF NOT EXISTS DDL.programming_language (
 	programming_language_name TEXT,
-	grade_id int4
+	programming_language_id int4
 );
 
 CREATE TABLE IF NOT EXISTS DDL.language (
