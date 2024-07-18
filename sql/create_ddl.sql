@@ -48,7 +48,8 @@ CREATE TABLE IF NOT EXISTS DDL.education (
 
 CREATE TABLE IF NOT EXISTS DDL.language_level (
 	language_level_name TEXT,
-	language_level_id int4
+	language_level_id int4,
+	language_level_grade int4
 );
 
 CREATE TABLE IF NOT EXISTS DDL.subject_industry_level (
@@ -95,7 +96,7 @@ CREATE TABLE IF NOT EXISTS DDL.language (
 CREATE TABLE IF NOT EXISTS DDL.employee (
 	employee_id int4,
 	department TEXT,	-- Восстановить дерево ?? / просто убрать точки
-	dob date,       	-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???
+--	dob date,       	-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???
 	activity TEXT,     -- Использовать при расчете метрик (181 человек уволен, 302 работают)
 --	gender TEXT,
 	name TEXT,			-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???

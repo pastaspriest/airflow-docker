@@ -36,15 +36,36 @@ CREATE TABLE IF NOT EXISTS ddl.grade_updates(
     new_grade_name TEXT,
     old_grade_id int4,
     grade_level int4,
-    new_grade_id SERIAL
+    new_grade_id int4
 );
 
-INSERT INTO ddl.grade_updates(old_grade_name, new_grade_name, old_grade_id, grade_level)
-SELECT 
-    grade_name
+CREATE TEMP TABLE IF NOT EXISTS tt_grade_manipulation AS 
+select 'Novice' as grade_name;
+
+insert into tt_grade_manipulation
+values 
+('Junior'),
+('Middle'),
+('Senior'),
+('Expert'),
+('Знаком'),
+('Знаком и могу применить'),
+('Знаком, могу применить и реализовать');
+
+alter table tt_grade_manipulation add column grade_id Serial;
+
+INSERT INTO ddl.grade_updates(old_grade_name, new_grade_name, old_grade_id, grade_level, new_grade_id)
+select
+	old_grade_name
+,	new_grade_name
+,	old_grade_id
+,	grade_encoding
+,   tt.grade_id AS new_grade_id
+from (SELECT 
+    grade_name as old_grade_name
 ,    CASE WHEN grade_name = 'Использовал на проекте' THEN 'Junior'
         ELSE grade_name end AS new_grade_name
-,   grade_id
+,   grade_id as old_grade_id
 ,   CASE WHEN grade_name = 'Novice' THEN 1
         WHEN grade_name = 'Junior' THEN 2
         WHEN grade_name = 'Использовал на проекте' THEN 2
@@ -52,35 +73,55 @@ SELECT
         WHEN grade_name = 'Senior' THEN 4
         WHEN grade_name = 'Expert' THEN 5
         ELSE 0 END AS grade_encoding
-FROM ods.grade
+FROM ods.grade) as g
+LEFT JOIN tt_grade_manipulation as tt
+ON g.new_grade_name = tt.grade_name;
 
-INSERT INTO ddl.grade_updates(old_grade_name, new_grade_name, old_grade_id, grade_level)
-SELECT 
-    industry_level_name
+INSERT INTO ddl.grade_updates(old_grade_name, new_grade_name, old_grade_id, grade_level, new_grade_id)
+select
+	old_grade_name
+,	new_grade_name
+,	old_grade_id
+,	grade_encoding
+,   tt.grade_id AS new_grade_id
+from 
+(SELECT 
+    industry_level_name as old_grade_name
 ,    CASE WHEN industry_level_name = 'Я знаю специфику отрасли' THEN 'Знаком'
         WHEN industry_level_name = 'Я знаю специфику отрасли и переложил это на систему' THEN 'Знаком и могу применить'
         WHEN industry_level_name = 'Я знаю специфику отрасли, могу переложить на систему, убедить клиента и реализовать' THEN 'Знаком, могу применить и реализовать'
         ELSE industry_level_name end AS new_grade_name
-,   industry_level_id
+,   industry_level_id as old_grade_id
 ,   CASE WHEN industry_level_name = 'Я знаю специфику отрасли' THEN 1
         WHEN industry_level_name = 'Я знаю специфику отрасли и переложил это на систему' THEN 2
         WHEN industry_level_name = 'Я знаю специфику отрасли, могу переложить на систему, убедить клиента и реализовать' THEN 3
         ELSE 0 END AS grade_encoding
-FROM ods.industry_level
+FROM ods.industry_level) as ind
+LEFT JOIN tt_grade_manipulation as tt
+ON ind.new_grade_name = tt.grade_name;
 
-INSERT INTO ddl.grade_updates(old_grade_name, new_grade_name, old_grade_id, grade_level)
-SELECT 
-    subject_level_name
+INSERT INTO ddl.grade_updates(old_grade_name, new_grade_name, old_grade_id, grade_level, new_grade_id)
+select
+	old_grade_name
+,	new_grade_name
+,	old_grade_id
+,	grade_encoding
+,   tt.grade_id AS new_grade_id
+from 
+(SELECT 
+    subject_level_name as old_grade_name
 ,    CASE WHEN subject_level_name = 'Я знаю предметную область' THEN 'Знаком'
         WHEN subject_level_name = 'Я знаю все особенности предметной области и могу переложить это на систему' THEN 'Знаком и могу применить'
         WHEN subject_level_name = 'Я знаю специфику предметной области, могу переложить на систему, убедить клиента и реализовать' THEN 'Знаком, могу применить и реализовать'
         ELSE subject_level_name end AS new_grade_name
-,   subject_level_id
+,   subject_level_id as old_grade_id
 ,   CASE WHEN subject_level_name = 'Я знаю предметную область' THEN 1
         WHEN subject_level_name = 'Я знаю все особенности предметной области и могу переложить это на систему' THEN 2
         WHEN subject_level_name = 'Я знаю специфику предметной области, могу переложить на систему, убедить клиента и реализовать' THEN 3
         ELSE 0 END AS grade_encoding
-FROM ods.subject_level
+FROM ods.subject_level) as sub
+LEFT JOIN tt_grade_manipulation as tt
+ON sub.new_grade_name = tt.grade_name;
 
 INSERT INTO ddl.grade(grade_name, grade_id, grade_level)
     SELECT DISTINCT new_grade_name, new_grade_id, grade_level
@@ -91,9 +132,10 @@ INSERT INTO ddl.grade(grade_name, grade_id, grade_level)
 INSERT INTO ddl.subject_industry_level(subject_industry_level_name, subject_industry_level_id, subject_industry_level_grade)
     SELECT DISTINCT new_grade_name, new_grade_id, grade_level
     FROM ddl.grade_updates
-    WHERE new_grade_id BETWEEN 7 AND 9
+    WHERE new_grade_id BETWEEN 6 AND 8
     ORDER BY new_grade_id ASC;
 
+DROP table tt_grade_manipulation;
 ----------------------------------------------------------- Таблицы с обновлением грейдов уже есть, ниже только очистка
 
 CREATE TEMP TABLE IF NOT EXISTS tt_active_employees AS -- выделяем работающих сотрудников
@@ -115,7 +157,9 @@ CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
     WHERE employee_id IN (select employee_id from tt_active_employees)
         AND employee_id IS NOT NULL AND bd_id IS NOT NULL AND grade_id IS NOT NULL
         AND employee_database_id IS NOT NULL;
-
+UPDATE tt_temp_table_2 SET date = '2021-02-01'::date WHERE date = '2221-02-01';
+UPDATE tt_temp_table_2 SET date = '2023-07-20'::date WHERE date = '2123-07-20';
+UPDATE tt_temp_table_2 SET date = '2019-04-01'::date WHERE date = '2119-04-01';
 DELETE FROM tt_temp_table_2 WHERE date IS NULL;
 
 INSERT INTO ods.error(run_date, table_name,	filtered_rows)
@@ -325,7 +369,7 @@ CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_1 AS
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
     SELECT employee_id, education_id,
         CASE WHEN year = 0 THEN extract(year from update_day)
-            ELSE year END AS date,
+            ELSE year END AS year,
         employee_education_id
     FROM ODS.employee_education
     WHERE employee_id IN (select employee_id from tt_active_employees)
@@ -349,7 +393,7 @@ SELECT
 ,   'employee_education' AS table_name
 ,    row_to_json(t) filtered_rows 
     FROM 
-    (SELECT * FROM ods."employee_subject" 
+    (SELECT * FROM ods."employee_education" 
         WHERE employee_education_id NOT IN (SELECT employee_education_id FROM tt_temp_table_2) -- employee работает, но строки нет
             AND employee_id IN (select employee_id from tt_active_employees)) t;
 
@@ -708,6 +752,12 @@ CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
 
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_3 AS
     SELECT language_level_name, language_level_id
+    ,   CASE WHEN language_level_name LIKE 'A2%' THEN 2
+            WHEN language_level_name LIKE 'B1%' THEN 3
+            WHEN language_level_name LIKE 'B2%' THEN 4
+            WHEN language_level_name LIKE 'C1%' THEN 5
+            WHEN language_level_name LIKE 'C2%' THEN 6
+            ELSE 1 END AS language_level_grade
     FROM ODS.language_level
     WHERE language_level_name IS NOT NULL AND language_level_id IS NOT NULL;
 
@@ -745,8 +795,8 @@ ALTER TABLE tt_temp_table_3 ADD COLUMN new_language_level_id SERIAL;
 INSERT INTO DDL.language(language_name, language_id)
     SELECT language_name, new_language_id FROM tt_temp_table_1;
 
-INSERT INTO DDL.language_level(language_level_name, language_level_id)
-    SELECT language_level_name, new_language_level_id FROM tt_temp_table_3;
+INSERT INTO DDL.language_level(language_level_name, language_level_id, language_level_grade)
+    SELECT language_level_name, new_language_level_id, language_level_grade FROM tt_temp_table_3;
 
 INSERT INTO DDL.employee_language(employee_id, language_id, language_level_id) 
     SELECT employee_id, t1.new_language_id, t3.new_language_level_id 
@@ -786,10 +836,11 @@ DROP table tt_temp_table_3;
 -------------------------------------------------
 
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_1 AS
-    SELECT employee_id, department, dob, activity, name, surname, position
+    SELECT employee_id, department, activity, name, surname, position
     FROM ODS.employee
     WHERE employee_id IN (select employee_id from tt_active_employees)
-        AND employee_id IS NOT NULL AND activity IS NOT NULL AND position IS NOT NULL;
+        AND employee_id IS NOT NULL AND activity IS NOT NULL AND position IS NOT NULL
+        AND position <> '-';
 
 INSERT INTO ods.error(run_date, table_name,	filtered_rows)
 SELECT 
@@ -801,7 +852,7 @@ SELECT
         WHERE employee_id NOT IN (SELECT employee_id FROM tt_temp_table_1)
             AND employee_id IN (select employee_id from tt_active_employees)) t;
 
-INSERT INTO DDL.employee(employee_id, department, dob, activity, name, surname, position) 
+INSERT INTO DDL.employee(employee_id, department, activity, name, surname, position) 
     SELECT *
     FROM tt_temp_table_1;
 
