@@ -4,3 +4,5 @@ __pycache__
 dags/__pycache__
 dags/.ipynb_checkpoints/
 dags/config.py
+sql/procedures/.ipynb_checkpoints/
+sql/.ipynb_checkpoints/
