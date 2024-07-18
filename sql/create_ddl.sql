@@ -263,3 +263,25 @@ CREATE TABLE IF NOT EXISTS DDL.employee_programming_language (
 --	sort int4,
 	date date
 );
+-- Таблица с ошибками 
+CREATE TABLE IF NOT EXISTS ods.error(
+	run_date date,
+    table_name TEXT,
+	filtered_rows JSON
+);
+------------------------------------------------Создание таблиц с обновлениями (чтобы было четко видно что на что обновили)
+CREATE TABLE IF NOT EXISTS ddl.education_updates(
+    old_education_name TEXT,
+    new_education_name TEXT,
+    old_education_id int4,
+    grade_level int4
+--    new_education_id SERIAL 
+);
+
+CREATE TABLE IF NOT EXISTS ddl.grade_updates(
+    old_grade_name TEXT,
+    new_grade_name TEXT,
+    old_grade_id int4,
+    grade_level int4,
+    new_grade_id int4
+);
