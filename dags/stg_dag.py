@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import psycopg2
 #from config import source_db, dwh_db
-import os
+# import os
 import io
 import csv
 import pandas as pd
@@ -10,6 +10,7 @@ from airflow import DAG
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.operators.python_operator import PythonOperator
+from airflow.operators.dummy import DummyOperator
 
 PG_HOOK_DWH = PostgresHook(postgres_conn_id='etl_db_1')
 PG_HOOK_SOURCE = PostgresHook(postgres_conn_id='source')
@@ -96,19 +97,26 @@ def insert_tables():
 # =============================================================
 
 with DAG(
-    dag_id='test_db_copy',
+    dag_id='stg_dag',
     default_args=default_args,
     start_date=datetime.now(),
-    schedule_interval='0 0 * * *',
+    schedule_interval='*/5 * * * *',
     template_searchpath='/opt/airflow/sql/'
 ) as dag:
     create_stg_layer = PostgresOperator(
         task_id='create_stg_layer',
         postgres_conn_id='etl_db_1',
         sql='create_stg_layer.sql')
+    clear_stg_layer = PostgresOperator(
+        task_id='clear_stg_layer',
+        postgres_conn_id='etl_db_1',
+        sql='SELECT stg.clearing_tables ();')
     insert_tables = PythonOperator(
         task_id='insert_tables',
         python_callable=insert_tables,
     )
+    stg_finish = DummyOperator(
+        task_id='stg_finish',
+    )
 
-create_stg_layer >> insert_tables # Добавить концевик
+create_stg_layer >> clear_stg_layer >> insert_tables >> stg_finish
