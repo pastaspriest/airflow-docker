@@ -12,39 +12,39 @@ default_args = {
 }
 
 with DAG(
-    dag_id='ods_dag',
+    dag_id='dm_dag',
     default_args=default_args,
     start_date=datetime(2024, 1, 1),
-    schedule_interval='28 * * * *',
+    schedule_interval='32 * * * *',
     # schedule_interval=None,
     template_searchpath='/opt/airflow/sql/',
     catchup=False,
 ) as dag:
-    stg_finish_sensor = ExternalTaskSensor(
-        task_id='stg_finish_sensor',
-        external_dag_id='stg_dag',
-        external_task_id='stg_finish',
+    ddl_finish_sensor = ExternalTaskSensor(
+        task_id='ddl_finish_sensor',
+        external_dag_id='ddl_dag',
+        external_task_id='ddl_finish',
         execution_delta=timedelta(minutes=2),
         # timeout=5,
         # check_existence=True
     )
-    create_ods_layer = PostgresOperator(
-        task_id='create_ods_layer',
+    create_dm_layer = PostgresOperator(
+        task_id='create_dm_layer',
         postgres_conn_id='etl_db_1',
-        sql='create_ods_layer.sql'
+        sql='create_dm.sql'
     )
-    clear_ods_layer = PostgresOperator(
-        task_id='clear_ods_layer',
+    clear_dm_layer = PostgresOperator(
+        task_id='clear_dm_layer',
         postgres_conn_id='etl_db_1',
-        sql='select ods.clearing_tables ()'
+        sql='select dm.clearing_tables ()'
     )
-    insert_in_ods_tables = PostgresOperator(
-        task_id='insert_in_ods_tables',
+    insert_in_dm_tables = PostgresOperator(
+        task_id='insert_in_dm_tables',
         postgres_conn_id='etl_db_1',
-        sql='stg_to_ods.sql'
+        sql='ddl_to_dm.sql'
     )
-    ods_finish = DummyOperator(
-        task_id='ods_finish',
+    dm_finish = DummyOperator(
+        task_id='dm_finish',
     )
 
-stg_finish_sensor >> create_ods_layer >> clear_ods_layer >> insert_in_ods_tables >> ods_finish
+ddl_finish_sensor >> create_dm_layer >> clear_dm_layer >> insert_in_dm_tables >> dm_finish

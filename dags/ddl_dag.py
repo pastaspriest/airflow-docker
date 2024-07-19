@@ -15,7 +15,7 @@ with DAG(
     dag_id='ddl_dag',
     default_args=default_args,
     start_date=datetime(2024, 1, 1),
-    schedule_interval='*/5 * * * *',
+    schedule_interval='30 * * * *',
     # schedule_interval=None,
     template_searchpath='/opt/airflow/sql/',
     catchup=False,
@@ -24,7 +24,7 @@ with DAG(
         task_id='ods_finish_sensor',
         external_dag_id='ods_dag',
         external_task_id='ods_finish',
-        execution_delta=timedelta(minutes=5),
+        execution_delta=timedelta(minutes=2),
         # timeout=5,
         # check_existence=True
     )
@@ -38,8 +38,8 @@ with DAG(
         postgres_conn_id='etl_db_1',
         sql='select ddl.clearing_tables ()'
     )
-    insert_tables = PostgresOperator(
-        task_id='insert_tables',
+    insert_in_ddl_tables = PostgresOperator(
+        task_id='insert_in_ddl_tables',
         postgres_conn_id='etl_db_1',
         sql='ods_to_ddl.sql'
     )
@@ -47,4 +47,4 @@ with DAG(
         task_id='ddl_finish',
     )
 
-ods_finish_sensor >> create_ddl_layer >> clear_ddl_layer >> insert_tables >> ddl_finish
+ods_finish_sensor >> create_ddl_layer >> clear_ddl_layer >> insert_in_ddl_tables >> ddl_finish

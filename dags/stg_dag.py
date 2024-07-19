@@ -20,11 +20,6 @@ PG_HOOK_SOURCE = PostgresHook(postgres_conn_id='source')
 
 # df = pd.read_sql('SELECT * FROM my_table', con=os.environ['CONN_SOURCE'])
 
-# default_args = {
-#     'owner': 'tema',
-#     'retries': 5,
-#     'retry_delay': timedelta(minutes=5)
-# }
 
 def read_meta(connect):
 
@@ -107,7 +102,8 @@ with DAG(
     default_args=default_args,
     # start_date=datetime.now(),
     start_date=datetime(2024, 1, 1),
-    schedule_interval='*/5 * * * *',
+    # schedule_interval=None,
+    schedule_interval='26 * * * *',
     template_searchpath='/opt/airflow/sql/',
     catchup=False
 ) as dag:

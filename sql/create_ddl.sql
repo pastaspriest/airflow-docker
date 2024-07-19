@@ -48,23 +48,27 @@ CREATE TABLE IF NOT EXISTS DDL.education (
 
 CREATE TABLE IF NOT EXISTS DDL.language_level (
 	language_level_name TEXT,
-	language_level_id int4
+	language_level_id int4,
+	language_level_grade int4
 );
 
-CREATE TABLE IF NOT EXISTS DDL.industry_level (
-	industry_level_name TEXT,
-	industry_level_id int4
+CREATE TABLE IF NOT EXISTS DDL.subject_industry_level (
+	subject_industry_level_name TEXT,
+	subject_industry_level_id int4,
+	subject_industry_level_grade int4
 );
 
 CREATE TABLE IF NOT EXISTS DDL.grade (
 	grade_name TEXT,
-	grade_id int4
+	grade_id int4,
+	grade_level int4
 );
 
-CREATE TABLE IF NOT EXISTS DDL.subject_level (
-	subject_level_name TEXT,
-	subject_level_id int4
-);
+-- объединена с industry_level
+--CREATE TABLE IF NOT EXISTS DDL.subject_level (
+--	subject_level_name TEXT,
+--	subject_level_id int4
+--);
 
 
 CREATE TABLE IF NOT EXISTS DDL.framework (
@@ -83,29 +87,29 @@ CREATE TABLE IF NOT EXISTS DDL.language (
 );
 
 
--- много проблемных полей было в ODS --------------------------------------
-CREATE TABLE IF NOT EXISTS DDL.resume (
-	employee_id int4,
-	resume_id int4
-);
+-- много проблемных полей было в ODS, не переносится в ddl --------------------------------------
+--CREATE TABLE IF NOT EXISTS DDL.resume (
+--	employee_id int4,
+--	resume_id int4
+--);
 
 CREATE TABLE IF NOT EXISTS DDL.employee (
 	employee_id int4,
 	department TEXT,	-- Восстановить дерево ?? / просто убрать точки
-	dob date,       	-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???
+--	dob date,       	-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???
 	activity TEXT,     -- Использовать при расчете метрик (181 человек уволен, 302 работают)
 --	gender TEXT,
 	name TEXT,			-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???
 	surname TEXT,		-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???
 --	last_authentification date,
-	position TEXT,     -- есть проблемные записи
+	position TEXT     -- есть проблемные записи
 --	cfo TEXT,
 --	regestration_date date,
 --	update_day date,
 --	e_mail TEXT,
 --	login TEXT,
 --	company TEXT,   тут все пусто
-	city TEXT			-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???
+--	city TEXT			-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???
 );
 
 CREATE TABLE IF NOT EXISTS DDL.employee_education (
@@ -258,4 +262,26 @@ CREATE TABLE IF NOT EXISTS DDL.employee_programming_language (
 --	activity TEXT,
 --	sort int4,
 	date date
+);
+-- Таблица с ошибками 
+CREATE TABLE IF NOT EXISTS ods.error(
+	run_date date,
+    table_name TEXT,
+	filtered_rows JSON
+);
+------------------------------------------------Создание таблиц с обновлениями (чтобы было четко видно что на что обновили)
+CREATE TABLE IF NOT EXISTS ddl.education_updates(
+    old_education_name TEXT,
+    new_education_name TEXT,
+    old_education_id int4,
+    grade_level int4
+--    new_education_id SERIAL 
+);
+
+CREATE TABLE IF NOT EXISTS ddl.grade_updates(
+    old_grade_name TEXT,
+    new_grade_name TEXT,
+    old_grade_id int4,
+    grade_level int4,
+    new_grade_id int4
 );

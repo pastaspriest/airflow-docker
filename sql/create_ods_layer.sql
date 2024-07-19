@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS ODS.employee_education (
 );
 
 CREATE TABLE IF NOT EXISTS ODS.industry (
-	industry_name TEXT NOT,
-	industry_id int4 NOT,
+	industry_name TEXT,
+	industry_id int4,
 	activity TEXT,
 	sort int4,
 	update_day date 

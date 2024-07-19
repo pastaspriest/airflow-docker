@@ -23,7 +23,7 @@ begin
 	delete from ods.employee_subject;
 	delete from ods.employee_system_type;
 	delete from ods.employee_technology;
-	delete from ods.error;
+	-- delete from ods.error;
 	delete from ods.framework;
 	delete from ods.grade;
 	delete from ods.ide;
