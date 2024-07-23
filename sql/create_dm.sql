@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS DM.dim_date (
 CREATE TABLE IF NOT EXISTS DM.generated_names(  -- Должна появится раньше (мб в stg)
 	employee_id int4,
 	full_name text
-)
+);
 -- ПРОТЕСТИТЬ ВСЕ ЧЕРЕЗ EXPLAIN, записать для защиты от вопросов
 
 CREATE TABLE IF NOT EXISTS DM.dim_skill_level (
@@ -149,11 +149,13 @@ SELECT
 , 	3 AS grade_type 
 FROM ddl.education;
 
--- employee
+-- employee          --- сделать вставку раньше (в одс)
 INSERT INTO DM.dim_employee (employee_id, position, department, fullname)
-SELECT e.employee_id, position, department, full_name FROM ddl.employee AS e
-LEFT JOIN dm.generated_names AS g
-ON e.employee_id = g.employee_id;
+SELECT e.employee_id, position, fd.department, full_name FROM ddl.employee AS e
+LEFT JOIN public.generated_names AS g
+ON e.employee_id = g.employee_id
+left join public.fixed_departments fd
+on e.department = fd.old_department_name;  -- TEMP JOIN;
 
 -- dim_date
 INSERT INTO  DM.dim_date (date,	calendar_year)
@@ -196,7 +198,7 @@ SELECT '2001-09-26'::date AS date, extract(year from '2001-09-26'::date) AS cale
 FROM ddl.employee_education) AS all_dates;
 
 -- union Execution Time: 0.283 ms
-INSERT INTO  DM.dim_skill_level (skill_level_type, skill_level_id, skill_grade, grade_name, next_grade_level)
+INSERT INTO  DM.dim_skill_level (skill_level_type, grade_name, skill_level_id, skill_grade, next_grade_level)
 -- grade
 SELECT 
 	1 AS skill_level_type
@@ -225,8 +227,7 @@ SELECT
 FROM ddl.education
 UNION
 -- language_level
-SELECT 
-	SELECT 
+SELECT  
 	4 AS skill_level_type
 ,	substring(language_level_name, '..') AS language_level_name
 ,	language_level_id
