@@ -7,7 +7,7 @@ from airflow.sensors.external_task_sensor import ExternalTaskSensor
 
 default_args = {
     'owner': 'tema',
-    'retries': 5,
+    'retries': 0,
     'retry_delay': timedelta(minutes=5)
 }
 
