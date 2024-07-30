@@ -9,27 +9,34 @@ CREATE SCHEMA IF NOT EXISTS DM;
 
 -- Создаем доп таблицы (заполнятся через airflow) (в stg или отдельный слой, например utils ?)
 
+-- Таблица с ошибками 
+CREATE TABLE IF NOT EXISTS stg.error(
+	run_date date,
+    table_name TEXT,
+	filtered_rows JSON
+);
+
 -- Изменения в уровнях знания, численная оценка
-CREATE TABLE stg.updated_grades (
+CREATE TABLE IF NOT EXISTS stg.updated_grades (
 	old_grade TEXT,
 	new_grade TEXT,
 	grade_level int4
 );
 
 -- url для изображений (сейчас по департаментам чтобы не делать 300 картинок)
-CREATE TABLE stg.department_pictures (
+CREATE TABLE IF NOT EXISTS stg.department_pictures (
 	department TEXT,
 	pic_url TEXT
 );
 
 -- Изменения в названиях департаментов
-CREATE TABLE stg.fixed_departments (
+CREATE TABLE IF NOT EXISTS stg.fixed_departments (
 	old_department_name TEXT,
 	department TEXT
 );
 
 -- Сгенерированные имена для удобства при разработке и наглядности демо
-CREATE TABLE stg.generated_names (
+CREATE TABLE IF NOT EXISTS stg.generated_names (
 	employee_id int4,
 	full_name TEXT
 );
