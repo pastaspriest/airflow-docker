@@ -42,9 +42,10 @@ CREATE TABLE IF NOT EXISTS stg.generated_names (
 );
 
 --Создаем все функции ???
+-- Добавить cascade ???
 
 -- Очистка stg
-create or replace function stg.clearing_tables ()
+create or replace function stg.clear_stg_tables ()
 RETURNS void
 language plpgsql
 as $$
@@ -84,7 +85,7 @@ END;
 $$;
 
 -- Очистка ods
-create or replace function stg.clearing_tables ()
+create or replace function stg.clear_ods_tables ()
 RETURNS void
 language plpgsql
 as $$
@@ -124,14 +125,13 @@ END;
 $$;
 
 -- Очистка ddl
-create or replace function stg.clearing_tables ()
+create or replace function stg.clear_ddl_tables ()
 RETURNS void
 language plpgsql
 as $$
 begin
 	delete from ddl.database;
 	delete from ddl.education;
-	delete from ddl.education_updates;
 	delete from ddl.employee;
 	delete from ddl.employee_database;
 	delete from ddl.employee_education;
@@ -163,7 +163,7 @@ END;
 $$;
 
 -- Очистка dm
-create or replace function stg.clearing_tables ()
+create or replace function stg.clear_dm_tables ()
 RETURNS void
 language plpgsql
 as $$
