@@ -64,13 +64,6 @@ CREATE TABLE IF NOT EXISTS DDL.grade (
 	grade_level int4
 );
 
--- объединена с industry_level
---CREATE TABLE IF NOT EXISTS DDL.subject_level (
---	subject_level_name TEXT,
---	subject_level_id int4
---);
-
-
 CREATE TABLE IF NOT EXISTS DDL.framework (
 	framework_name TEXT,
 	framework_id int4
@@ -86,202 +79,107 @@ CREATE TABLE IF NOT EXISTS DDL.language (
 	language_id int4
 );
 
-
--- много проблемных полей было в ODS, не переносится в ddl --------------------------------------
---CREATE TABLE IF NOT EXISTS DDL.resume (
---	employee_id int4,
---	resume_id int4
---);
-
 CREATE TABLE IF NOT EXISTS DDL.employee (
 	employee_id int4,
-	department TEXT,	-- Восстановить дерево ?? / просто убрать точки
---	dob date,       	-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???
-	activity TEXT,     -- Использовать при расчете метрик (181 человек уволен, 302 работают)
---	gender TEXT,
-	name TEXT,			-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???
-	surname TEXT,		-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???
---	last_authentification date,
-	position TEXT     -- есть проблемные записи
---	cfo TEXT,
---	regestration_date date,
---	update_day date,
---	e_mail TEXT,
---	login TEXT,
---	company TEXT,   тут все пусто
---	city TEXT			-- ВСЕ ПОЛЯ ПУСТЫЕ, НАДО ГЕНЕРИТЬ ???
+	department TEXT,	-- Восстановить дерево / просто убрать точки
+	activity TEXT,     	-- Использовать при расчете метрик (181 человек уволен, 302 работают)
+	fullname TEXT,      -- Сгенерировали
+	picture_url TEXT,   -- Сгенерировали
+	position TEXT
 );
 
 CREATE TABLE IF NOT EXISTS DDL.employee_education (
 	employee_id int4,
 	education_id int4,
---	qualification TEXT,      
---	employee_education_id int4,
---	activity TEXT,
---	sort int4,
---	update_day date,
 	year int4
---	school_name TEXT,
---	fiction_name TEXT,
---	faculty TEXT,
---	specialty TEXT
 );
---------------   Основные таблицы с вопросами ^^^^
+
 CREATE TABLE IF NOT EXISTS DDL.employee_database (
 	employee_id int4,
---	update_day date,
 	bd_id int4,
 	grade_id int4,
---	employee_database_id int4,
---	activity TEXT,
---	sort int4,
 	date date
 );
 
 CREATE TABLE IF NOT EXISTS DDL.employee_instrument (
 	employee_id int4,
---	update_day date,
 	instrument_id int4,
 	grade_id int4,
---	employee_instrument_id int4,
---	activity TEXT,
---	sort int4,
 	date date
 );
 
 CREATE TABLE IF NOT EXISTS DDL.employee_industry (
 	employee_id int4,
---	update_day date,
 	industry_id int4,
 	industry_level_id int4,
---	employee_industry_id int4,
---	activity TEXT,
---	sort int4,
 	date date
 );
 
 CREATE TABLE IF NOT EXISTS DDL.employee_platform (
 	employee_id int4,
---	update_day date,
 	platform_id int4,
 	grade_id int4,
---	employee_platform_id int4,
---	activity TEXT,
---	sort int4,
 	date date
 );
 
 CREATE TABLE IF NOT EXISTS DDL.employee_ide (
 	employee_id int4,
---	update_day date,
 	ide_id int4,
 	grade_id int4,
---	employee_ide_id int4,
---	activity TEXT,
---	sort int4,
 	date date
 );
 
 CREATE TABLE IF NOT EXISTS DDL.employee_subject (
 	employee_id int4,
---	update_day date,
 	subject_id int4,
 	subject_level_id int4,
---	employee_subject_id int4,
---	activity TEXT,
---	sort int4,
 	date date
 );
 
-
---CREATE TABLE IF NOT EXISTS DDL.employee_sertificate ( -- не используем совсем
---	employee_id int4,
---	update_day date,
---	sertificate_name TEXT,
---	organisation_name TEXT,
---	employee_sertificate_id int4,
---	activity TEXT,
---	sort int4,
---	year int4
---);
-
-
 CREATE TABLE IF NOT EXISTS DDL.employee_technology (
 	employee_id int4,
---	update_day date,
 	technology_id int4,
 	grade_id int4,
---	employee_technology_id int4,
---	activity TEXT,
---	sort int4,
 	date date
 );
 
 
 
 CREATE TABLE IF NOT EXISTS DDL.employee_language (
-	employee_id int4,
---	update_day date,  -- Оставить дату изменения, смотреть динамику по ней ?? + переименовать в date 
+	employee_id int4,  
 	language_id int4,
 	language_level_id int4
---	employee_language_id int4,
---	activity TEXT,
---	sort int4
 );
 
 
 CREATE TABLE IF NOT EXISTS DDL.employee_system_type (
 	employee_id int4,
---	update_day date,
 	system_type_id int4,
 	grade_id int4,
---	employee_system_type_id int4,
---	activity TEXT,
---	sort int4,
 	date date
 );
 
 
 CREATE TABLE IF NOT EXISTS DDL.employee_framework (
 	employee_id int4,
---	update_day date,
 	grade_id int4,
 	framework_id int4,
---	employee_framework_id int4,
---	activity TEXT,
---	sort int4,
 	date date
 );
 
 CREATE TABLE IF NOT EXISTS DDL.employee_programming_language (
 	employee_id int4,
---	update_day date,
 	grade_id int4,
 	programming_language_id int4,
---	employee_programming_language_id int4,
---	activity TEXT,
---	sort int4,
 	date date
 );
--- Таблица с ошибками 
-CREATE TABLE IF NOT EXISTS ods.error(
-	run_date date,
-    table_name TEXT,
-	filtered_rows JSON
-);
-------------------------------------------------Создание таблиц с обновлениями (чтобы было четко видно что на что обновили)
-CREATE TABLE IF NOT EXISTS ddl.education_updates(
-    old_education_name TEXT,
-    new_education_name TEXT,
-    old_education_id int4,
-    grade_level int4
---    new_education_id SERIAL 
-);
 
+-- Новая таблица с переводом старх грейдов в новые
 CREATE TABLE IF NOT EXISTS ddl.grade_updates(
     old_grade_name TEXT,
     new_grade_name TEXT,
     old_grade_id int4,
     grade_level int4,
-    new_grade_id int4
+    new_grade_id SERIAL,
+	grade_type int4
 );
