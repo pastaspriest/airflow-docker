@@ -114,7 +114,7 @@ with DAG(
     clear_stg_layer = PostgresOperator(
         task_id='clear_stg_layer',
         postgres_conn_id='etl_db_1',
-        sql='SELECT stg.clearing_tables ();')
+        sql='SELECT stg.clear_stg_tables ();')
     insert_tables = PythonOperator(
         task_id='insert_tables',
         python_callable=insert_tables,

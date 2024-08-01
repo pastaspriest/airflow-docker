@@ -36,7 +36,7 @@ with DAG(
     clear_ddl_layer = PostgresOperator(
         task_id='clear_ddl_layer',
         postgres_conn_id='etl_db_1',
-        sql='select ddl.clearing_tables ()'
+        sql='select stg.clear_ddl_tables ()'
     )
     insert_in_ddl_tables = PostgresOperator(
         task_id='insert_in_ddl_tables',

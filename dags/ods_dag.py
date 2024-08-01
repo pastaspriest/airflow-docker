@@ -36,7 +36,7 @@ with DAG(
     clear_ods_layer = PostgresOperator(
         task_id='clear_ods_layer',
         postgres_conn_id='etl_db_1',
-        sql='select ods.clearing_tables ()'
+        sql='select stg.clear_ods_tables ()'
     )
     insert_in_ods_tables = PostgresOperator(
         task_id='insert_in_ods_tables',
