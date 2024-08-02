@@ -16,17 +16,17 @@ default_args = {
 with DAG(
     dag_id='ddl_dag',
     default_args=default_args,
-    schedule_interval=None,
+    # schedule_interval=None,
+    schedule_interval='30 * * * *',
     template_searchpath='/opt/airflow/sql/',
     catchup=False,
-    execution_delta=timedelta(minutes=4)
 ) as dag:
     ods_finish_sensor = ExternalTaskSensor(
         task_id='ods_finish_sensor',
         external_dag_id='ods_dag',
         external_task_id='ods_finish',
         execution_delta=timedelta(minutes=2),
-        timeout=5,
+        timeout=240
         # check_existence=True
     )
     create_ddl_layer = PostgresOperator(

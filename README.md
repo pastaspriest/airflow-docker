@@ -4,7 +4,7 @@
 > Бизнес аналитик Смяткин Александр
 
 ## 1. Слои данных
-В проекте используются 4 слоя данных: **STG**,**ODS**, **DDS**, **DM**
+В проекте используются 4 слоя данных: **STG**, **ODS**, **DDS**, **DM**
 ### `STG`
 В слое **STG** содержатся таблицы в которые копируются данные из **source** 1 в 1. Скрипт создания слоя находится в [**sql/create_stg_layer.sql**](sql/create_stg_layer.sql). Так-же в этом слое находятся все функции для очистки слоев. 
 ### `ODS`
@@ -32,7 +32,6 @@
 │   │   ├── fixed_departments.csv
 │   │   ├── generated_names.csv
 │   │   └── updated_grades.csv
-├── dag_ddl.py
 │   ├── dds_dag.py
 │   ├── dm_dag.py
 │   ├── init_dag.py
@@ -53,7 +52,7 @@
 ```
 
 ## 3. Архитектура решения
-![Архитектура решения](https://github.com/pastaspriest/airflow-docker/blob/main/architecture_diagram.png)
+[Архитектура решения](https://docs.google.com/document/d/1ITXhs5Cnr0AWqemk1Vbd8yXOPFNLKkWqZZLAiQ4688M/edit?usp=sharing)
 
 ## 4. Запуск сервиса Apache Airflow
 Запуск сервиса Apache Airflow 2.6.3 происходит при помощи **docker compose**. Официальная инструкция к установке указана в [официальной документации по установке Docker](https://docs.docker.com/desktop/install/windows-install/).

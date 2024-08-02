@@ -95,15 +95,15 @@ default_args = {
 with DAG(
     dag_id='stg_dag',
     default_args=default_args,
-    schedule_interval=None,
-    # schedule_interval='26 * * * *',
+    # schedule_interval=None,
+    schedule_interval='26 * * * *',
     template_searchpath='/opt/airflow/sql/',
     catchup=False
 ) as dag:
-    create_stg_layer = PostgresOperator(
-        task_id='create_stg_layer',
+    create_stg = PostgresOperator(
+        task_id='create_stg',
         postgres_conn_id='etl_db_1',
-        sql='create_stg_layer.sql')
+        sql='create_stg.sql')
     clear_stg_layer = PostgresOperator(
         task_id='clear_stg_layer',
         postgres_conn_id='etl_db_1',
@@ -116,4 +116,4 @@ with DAG(
         task_id='stg_finish',
     )
 
-create_stg_layer >> clear_stg_layer >> insert_tables >> stg_finish
+create_stg >> clear_stg_layer >> insert_tables >> stg_finish

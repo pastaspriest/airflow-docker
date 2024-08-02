@@ -14,26 +14,25 @@ default_args = {
 }
 
 with DAG(
-    dag_id='stg_dag',
+    dag_id='ods_dag',
     default_args=default_args,
-    schedule_interval=None,
-    # schedule_interval='26 * * * *',
+    # schedule_interval=None,
+    schedule_interval='28 * * * *',
     template_searchpath='/opt/airflow/sql/',
     catchup=False,
-    execution_delta=timedelta(minutes=2)
 ) as dag:
     stg_finish_sensor = ExternalTaskSensor(
         task_id='stg_finish_sensor',
         external_dag_id='stg_dag',
         external_task_id='stg_finish',
         execution_delta=timedelta(minutes=2),
-        timeout=5,
+        timeout=120
         # check_existence=True
     )
-    create_ods_layer = PostgresOperator(
-        task_id='create_ods_layer',
+    create_ods = PostgresOperator(
+        task_id='create_ods',
         postgres_conn_id='etl_db_1',
-        sql='create_ods_layer.sql'
+        sql='create_ods.sql'
     )
     clear_ods_layer = PostgresOperator(
         task_id='clear_ods_layer',
@@ -49,4 +48,4 @@ with DAG(
         task_id='ods_finish',
     )
 
-stg_finish_sensor >> create_ods_layer >> clear_ods_layer >> insert_in_ods_tables >> ods_finish
+stg_finish_sensor >> create_ods >> clear_ods_layer >> insert_in_ods_tables >> ods_finish

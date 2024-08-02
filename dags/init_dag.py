@@ -24,7 +24,7 @@ AIRFLOW_HOME = os.getenv('AIRFLOW_HOME')
 
 
 default_args = {
-    'owner': 'tema',
+    'owner': 'airflow',
     'retries': 0,
     'retry_delay': timedelta(minutes=5)
 }
