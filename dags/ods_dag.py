@@ -6,26 +6,28 @@ from airflow.operators.dummy import DummyOperator
 from airflow.sensors.external_task_sensor import ExternalTaskSensor
 
 default_args = {
-    'owner': 'tema',
-    'retries': 0,
-    'retry_delay': timedelta(minutes=5)
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=4),
+    'start_date': datetime(2024, 8, 2),
 }
 
 with DAG(
-    dag_id='ods_dag',
+    dag_id='stg_dag',
     default_args=default_args,
-    start_date=datetime(2024, 1, 1),
-    schedule_interval='28 * * * *',
-    # schedule_interval=None,
+    schedule_interval=None,
+    # schedule_interval='26 * * * *',
     template_searchpath='/opt/airflow/sql/',
     catchup=False,
+    execution_delta=timedelta(minutes=2)
 ) as dag:
     stg_finish_sensor = ExternalTaskSensor(
         task_id='stg_finish_sensor',
         external_dag_id='stg_dag',
         external_task_id='stg_finish',
         execution_delta=timedelta(minutes=2),
-        # timeout=5,
+        timeout=5,
         # check_existence=True
     )
     create_ods_layer = PostgresOperator(
