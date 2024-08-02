@@ -53,7 +53,7 @@
 ```
 
 ## 3. Архитектура решения
-[Архитектура решения](architecture_diagram.png)
+![Архитектура решения](https://github.com/pastaspriest/airflow-docker/blob/main/architecture_diagram.png)
 
 ## 4. Запуск сервиса Apache Airflow
 Запуск сервиса Apache Airflow 2.6.3 происходит при помощи **docker compose**. Официальная инструкция к установке указана в [официальной документации по установке Docker](https://docs.docker.com/desktop/install/windows-install/).
