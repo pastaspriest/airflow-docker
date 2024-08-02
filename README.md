@@ -11,16 +11,6 @@
 В слой **ODS** перенесены все таблицы с переименованием названий таблиц и атрибутов по стандарту sql. Скрипты создания и заполнения слоя находится в [**sql/create_ods_layer.sql**](sql/create_ods_layer.sql) и [**sql/stg_to_ods.sql**](sql/stg_to_ods.sql).
 ### `DDL`
 В слое **DDL** произведена очистка данных и выгрузка строк с ошибками в таблицу **stg.error**. 
-Категории ошибок:
-|Категории ошибок|
-|---|
-|Прочие|
-|Дубликат-индекс|
-|Дубликат-значение|
-|Некорректное значение|
-|Некорректное значение (ограничение 40 символов)|
-|Пустое значение|
-|Отсутствует связь сежду таблицами из-за нехватки ключей|
 Скрипты создания и заполнения слоя находится в [**sql/create_ddl.sql**](sql/create_ddl.sql) и [**sql/ods_to_ddl.sql**](sql/ods_to_ddl.sql).
 ### `DM`
 В слое DM хранятся таблицы **dim_date**, **dim_department**, **dim_employee**, **dim_position**, **dim_skill_level**, **dim_skills**, **dim_year**, **fact_empl_skills**, **fact_pos_year**, **for_radar** необходимые для создания витрины и последующей визуализации. Скрипты создания и заполнения слоя находится в [**sql/create_dm.sql**](sql/create_dm.sql) и [**sql/ddl_to_dm.sql**](sql/ddl_to_dm.sql).
@@ -62,18 +52,19 @@
 └── docker-compose-airflow.yaml
 ```
 
-> Примечание: для корректной работы сервиса требуется создать папку **src/** в корневой директории проекта, поместив туда *.csv* файлы с транзакциями и названиями магазинов - **transaction.csv** и **stores.csv** соответственно
+## 3. Архитектура решения
+[Архитектура решения](architecture_diagram.png)
 
-## 3. Запуск сервиса Apache Airflow
+## 4. Запуск сервиса Apache Airflow
 Запуск сервиса Apache Airflow 2.6.3 происходит при помощи **docker compose**. Официальная инструкция к установке указана в [официальной документации по установке Docker](https://docs.docker.com/desktop/install/windows-install/).
 
 1. Скопируйте репозиторий на свою систему:
 ```bash
-git clone https://github.com/Kaboupi/korus_interns_2.git
+git clone https://github.com/pastaspriest/airflow-docker.git
 ```
 2. Перейдите в директорию с проектом:
 ```bash
-cd korus_interns_2
+cd airflow-docker
 ```
 3. Создайте папки для запуска **Apache Airflow**:
 ```bash
@@ -81,31 +72,10 @@ mkdir config logs plugins
 ```
 4. (Только при первом запуске!) Инициализируйте базу данных в **Apache Airflow**:
 ```bash
-docker compose -f docker-compose-airflow.yaml up airflow-init
+docker compose -f docker-compose.yaml up airflow-init
 ```
 5. После иниализации запустите контейнер:
 ```bash
-docker compose -f docker-compose-airflow.yaml up -d
+docker compose -f docker-compose.yaml up -d
 ```
 6. В интерфейсе https://localhost:8080/ по пути **Admin -> Connections** укажите соединения к БД
-
-## 4. Запуск сервиса Apache Superset
-Официальная инструкция к установке указана в [официальной документации к установке Apache Superset при помощи Docker Compose](https://superset.apache.org/docs/installation/installing-superset-using-docker-compose).
-
-1. Перейдите в папку с проектом **korus_interns_2**:
-```bash
-cd korus_interns_2
-```
-2. Скопируйте репозиторий Apache Superset на свою систему:
-```bash
-git clone https://github.com/apache/superset.git
-```
-3. Перейдите в директорию **superset**:
-```bash
-cd superset
-```
-4. Запустите контейнер:
-```bash
-docker compose -f docker-compose-non-dev.yml up -d
-```
-5. Перейдите в интерфейс **Apache Superset** по адресу https://localhost:8088/ и установите подключение с базой данных
