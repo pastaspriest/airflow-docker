@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
 import psycopg2
-#from config import source_db, dwh_db
-# import os
 import io
 import csv
 import pandas as pd
@@ -14,11 +12,6 @@ from airflow.operators.dummy import DummyOperator
 
 PG_HOOK_DWH = PostgresHook(postgres_conn_id='etl_db_1')
 PG_HOOK_SOURCE = PostgresHook(postgres_conn_id='source')
-
-# os.environ['CONN_DWH'] = PG_HOOK_DWH.get_uri().rsplit('?')[0]
-# os.environ['CONN_SOURCE'] = PG_HOOK_DWH.get_uri().rsplit('?')[0]
-
-# df = pd.read_sql('SELECT * FROM my_table', con=os.environ['CONN_SOURCE'])
 
 
 def read_meta(connect):
@@ -92,29 +85,29 @@ def insert_tables():
 # =============================================================
 
 default_args = {
-    'owner': 'tema',
-    'retries': 5,
-    'retry_delay': timedelta(minutes=5)
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=2),
+    'start_date': datetime(2024, 8, 2),
 }
 
 with DAG(
     dag_id='stg_dag',
     default_args=default_args,
-    # start_date=datetime.now(),
-    start_date=datetime(2024, 1, 1),
     # schedule_interval=None,
     schedule_interval='26 * * * *',
     template_searchpath='/opt/airflow/sql/',
     catchup=False
 ) as dag:
-    create_stg_layer = PostgresOperator(
-        task_id='create_stg_layer',
+    create_stg = PostgresOperator(
+        task_id='create_stg',
         postgres_conn_id='etl_db_1',
-        sql='create_stg_layer.sql')
+        sql='create_stg.sql')
     clear_stg_layer = PostgresOperator(
         task_id='clear_stg_layer',
         postgres_conn_id='etl_db_1',
-        sql='SELECT stg.clearing_tables ();')
+        sql='SELECT stg.clear_stg_tables ();')
     insert_tables = PythonOperator(
         task_id='insert_tables',
         python_callable=insert_tables,
@@ -123,4 +116,4 @@ with DAG(
         task_id='stg_finish',
     )
 
-create_stg_layer >> clear_stg_layer >> insert_tables >> stg_finish
+create_stg >> clear_stg_layer >> insert_tables >> stg_finish

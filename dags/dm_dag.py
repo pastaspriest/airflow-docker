@@ -6,26 +6,27 @@ from airflow.operators.dummy import DummyOperator
 from airflow.sensors.external_task_sensor import ExternalTaskSensor
 
 default_args = {
-    'owner': 'tema',
-    'retries': 5,
-    'retry_delay': timedelta(minutes=5)
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=4),
+    'start_date': datetime(2024, 8, 2),
 }
 
 with DAG(
     dag_id='dm_dag',
     default_args=default_args,
-    start_date=datetime(2024, 1, 1),
-    schedule_interval='32 * * * *',
     # schedule_interval=None,
+    schedule_interval='32 * * * *',
     template_searchpath='/opt/airflow/sql/',
-    catchup=False,
+    catchup=False
 ) as dag:
     ddl_finish_sensor = ExternalTaskSensor(
         task_id='ddl_finish_sensor',
         external_dag_id='ddl_dag',
         external_task_id='ddl_finish',
         execution_delta=timedelta(minutes=2),
-        # timeout=5,
+        timeout=300,
         # check_existence=True
     )
     create_dm_layer = PostgresOperator(
@@ -36,7 +37,7 @@ with DAG(
     clear_dm_layer = PostgresOperator(
         task_id='clear_dm_layer',
         postgres_conn_id='etl_db_1',
-        sql='select dm.clearing_tables ()'
+        sql='select stg.clear_dm_tables ()'
     )
     insert_in_dm_tables = PostgresOperator(
         task_id='insert_in_dm_tables',
