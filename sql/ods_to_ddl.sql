@@ -1,8 +1,18 @@
 -- Все обновления в грейдах прописаны в таблице stg.udpated_grades (аналитики расписали, мы занесли в бд 1 раз и используем)
 
 -- Формирую таблицу с "переводом", старыми id и номером таблицы
-INSERT into ddl.grade_updates(old_grade_name, new_grade_name, grade_level, old_grade_id, grade_type)
--- education
+-- сначала во временную таблицу чтобы корректно объединить таблицы industry_level и subject_level
+
+create temp table tt_grades (
+	old_grade_name TEXT,
+    new_grade_name TEXT,
+    old_grade_id int4,
+    grade_level int4,
+	grade_type int4,
+	new_grade_id SERIAL
+);
+
+insert into tt_grades(old_grade_name, new_grade_name, grade_level, old_grade_id,  grade_type)
 select 
 	old_grade
 ,	new_grade
@@ -35,17 +45,6 @@ from stg.updated_grades ug
 right join ods.industry_level il
 	on ug.old_grade = il.industry_level_name
 union all
--- subject
-select 
-	old_grade
-,	new_grade
-,	grade_level
-,	subject_level_id as old_id
-,	4 as grade_type
-from stg.updated_grades ug
-right join ods.subject_level sl
-	on ug.old_grade = sl.subject_level_name
-union all
 --language
 select 
 	language_level_name as old_grade
@@ -61,6 +60,25 @@ select
 from ODS.language_level
 order by grade_type asc, grade_level asc;
 
+insert into ddl.grade_updates(old_grade_name, new_grade_name, grade_level, old_grade_id, new_grade_id, grade_type)
+select old_grade_name, new_grade_name, grade_level, old_grade_id, new_grade_id, grade_type from tt_grades;
+
+-- subject
+insert into ddl.grade_updates(old_grade_name, new_grade_name, grade_level, old_grade_id, new_grade_id, grade_type)
+select 
+	old_grade as old_grade_name
+,	new_grade as new_grade_name
+,	ug.grade_level as grade_level
+,	subject_level_id as old_grade_id
+,	tt.new_grade_id as new_grade_id
+,	4 as grade_type
+from stg.updated_grades ug
+right join ods.subject_level sl
+	on ug.old_grade = sl.subject_level_name
+left join tt_grades as tt
+	on ug.new_grade = tt.new_grade_name;
+
+drop table tt_grades;
 
 -- Заполнение таблиц с грейдами 
 
