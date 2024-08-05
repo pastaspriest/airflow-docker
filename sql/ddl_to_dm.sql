@@ -799,6 +799,31 @@ FROM (
 ) AS imp
 	WHERE fes.employee_key = imp.employee_key;
 
+-- skill_popularity
+-- Число записей о навыке для каждой из должностей за все время
+-- Для сортировки в блоке "Область развития"
+
+ALTER TABLE DM.fact_empl_skills ADD COLUMN skill_popularity int4;
+
+-- Заполнение
+UPDATE DM.fact_empl_skills AS fes 
+SET skill_popularity = inner_table.skill_popularity
+FROM (
+SELECT 
+		fes.employee_key
+	, 	fes.skill_key
+	, 	fes.date_key
+	, 	fes.skill_level_key
+	,	COUNT(*) over (partition by fes.skill_key, de.position) as skill_popularity
+from dm.fact_empl_skills fes
+left JOIN dm.dim_employee de
+		ON fes.employee_key = de.employee_key
+) AS inner_table
+WHERE 1=1
+	AND fes.employee_key = inner_table.employee_key 
+	AND fes.skill_key = inner_table.skill_key 
+	AND fes.date_key = inner_table.date_key 
+	AND fes.skill_level_key = inner_table.skill_level_key;
 
 
 --------------------------------------
