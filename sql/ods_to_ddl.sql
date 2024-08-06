@@ -131,22 +131,24 @@ CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_1 AS
 
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
     SELECT 
-        DISTINCT ON (employee_id, bd_id, gu.new_grade_id)
+        DISTINCT ON (employee_id, bd_id, g.grade_id)
         employee_id
     ,   bd_id
-    ,   gu.new_grade_id
+    ,   g.grade_id--gu.new_grade_id
     ,   COALESCE(date, update_day) AS date
     ,   employee_database_id
     FROM ODS.employee_database as t2
     LEFT JOIN ddl.grade_updates AS gu
         ON t2.grade_id = gu.old_grade_id
+   	left join ddl.grade g
+    	on gu.new_grade_name = g.grade_name
     WHERE 1=1
         AND employee_id IN (select employee_id from tt_active_employees)
         AND employee_id IS NOT NULL 
         AND bd_id IS NOT NULL 
-        AND grade_id IS NOT NULL
+        AND t2.grade_id IS NOT NULL
         AND employee_database_id IS NOT NULL
-    ORDER BY employee_id, bd_id, gu.new_grade_id, date ASC;
+    ORDER BY employee_id, bd_id, g.grade_id, date ASC;
 
 UPDATE tt_temp_table_2 SET date = '2021-02-01'::date WHERE date = '2221-02-01';
 UPDATE tt_temp_table_2 SET date = '2023-07-20'::date WHERE date = '2123-07-20';
@@ -182,7 +184,7 @@ INSERT INTO DDL.database(bd_name, bd_id)
 SELECT bd_name, new_bd_id FROM tt_temp_table_1;
 
 INSERT INTO DDL.employee_database(employee_id, bd_id, grade_id, date) 
-SELECT employee_id, t1.new_bd_id, t2.new_grade_id, date 
+SELECT employee_id, t1.new_bd_id, t2.grade_id, date 
 FROM tt_temp_table_2 AS t2
 INNER JOIN tt_temp_table_1 AS t1
     ON t1.bd_id = t2.bd_id;
@@ -205,22 +207,24 @@ CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_1 AS
 
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
     SELECT 
-        DISTINCT ON (employee_id, programming_language_id, gu.new_grade_id)
+        DISTINCT ON (employee_id, programming_language_id, g.grade_id)
         employee_id
     ,   programming_language_id
-    ,   gu.new_grade_id
+    ,   g.grade_id   --gu.new_grade_id
     ,   COALESCE(date, update_day) AS date
     ,   employee_programming_language_id
     FROM ODS.employee_programming_language as t2
     LEFT JOIN ddl.grade_updates AS gu
         ON t2.grade_id = gu.old_grade_id
+    left join ddl.grade g
+    	on gu.new_grade_name = g.grade_name
     WHERE 1=1
         AND employee_id IN (select employee_id from tt_active_employees)
         AND employee_id IS NOT NULL 
         AND programming_language_id IS NOT NULL 
-        AND grade_id IS NOT NULL
+        AND t2.grade_id IS NOT NULL
         AND employee_programming_language_id IS NOT NULL
-    ORDER BY employee_id, programming_language_id, gu.new_grade_id, date ASC;
+    ORDER BY employee_id, programming_language_id, g.grade_id, date ASC;
 
 DELETE FROM tt_temp_table_2 WHERE date IS NULL;
 
@@ -253,7 +257,7 @@ INSERT INTO DDL.programming_language(programming_language_name, programming_lang
 SELECT programming_language_name, new_programming_language_id FROM tt_temp_table_1;
 
 INSERT INTO DDL.employee_programming_language(employee_id, programming_language_id, grade_id, date) 
-SELECT employee_id, t1.new_programming_language_id, t2.new_grade_id, date 
+SELECT employee_id, t1.new_programming_language_id, t2.grade_id, date 
 FROM tt_temp_table_2 AS t2
 INNER JOIN tt_temp_table_1 AS t1
     ON t1.programming_language_id = t2.programming_language_id;
@@ -345,22 +349,24 @@ CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_1 AS
 
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
     SELECT 
-        DISTINCT ON (employee_id, subject_id, gu.new_grade_id)
+        DISTINCT ON (employee_id, subject_id, sl.subject_industry_level_id)
         employee_id
     ,   subject_id
-    ,   gu.new_grade_id
+    ,   sl.subject_industry_level_id --gu.new_grade_id
     ,   COALESCE(date, update_day) AS date
     ,   employee_subject_id
     FROM ODS.employee_subject as t2
     LEFT JOIN ddl.grade_updates AS gu
         ON t2.subject_level_id = gu.old_grade_id
+    left join ddl.subject_industry_level sl 
+    	on gu.new_grade_name = sl.subject_industry_level_name
     WHERE 1=1
         AND employee_id IN (select employee_id from tt_active_employees)
         AND employee_id IS NOT NULL 
         AND subject_id IS NOT NULL 
         AND subject_level_id IS NOT NULL
         AND employee_subject_id IS NOT NULL
-    ORDER BY employee_id, subject_id, gu.new_grade_id, date ASC;
+    ORDER BY employee_id, subject_id, sl.subject_industry_level_id, date ASC;
 
 DELETE FROM tt_temp_table_2 WHERE date IS NULL;
 
@@ -389,7 +395,7 @@ INSERT INTO DDL.subject(subject_name, subject_id)
     SELECT subject_name, new_subject_id FROM tt_temp_table_1;
 
 INSERT INTO DDL.employee_subject(employee_id, subject_id, subject_level_id, date) 
-    SELECT employee_id, t1.new_subject_id, new_grade_id, date 
+    SELECT employee_id, t1.new_subject_id, subject_industry_level_id, date 
     FROM tt_temp_table_2 AS t2
     INNER JOIN tt_temp_table_1 AS t1
         ON t1.subject_id = t2.subject_id;
@@ -403,21 +409,23 @@ DROP table tt_temp_table_2;
     
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
     SELECT 
-        DISTINCT ON (employee_id, eu.new_grade_id)
+        DISTINCT ON (employee_id, e.education_id)
         employee_id
-    ,   eu.new_grade_id
-    ,   CASE WHEN year = 0 THEN extract(year from update_day)
+    ,   e.education_id
+    ,   CASE WHEN year = 0 OR year IS NULL THEN extract(year from update_day)
             ELSE year END AS year
     ,   employee_education_id
     FROM ODS.employee_education t2
     LEFT JOIN ddl.grade_updates AS eu                           
         ON t2.education_id = eu.old_grade_id
+    left join ddl.education e
+    	on eu.new_grade_name = e.education_name
     WHERE 1=1
         AND employee_id IN (select employee_id from tt_active_employees)
         AND employee_id IS NOT NULL 
-        AND education_id IS NOT NULL
+        AND t2.education_id IS NOT NULL
         AND employee_education_id IS NOT NULL
-    ORDER BY employee_id, eu.new_grade_id, year ASC;
+    ORDER BY employee_id, e.education_id, year ASC;
 
 DELETE FROM tt_temp_table_2 WHERE year IS NULL;
 
@@ -432,8 +440,8 @@ SELECT
             AND employee_id IN (select employee_id from tt_active_employees)) t;
 
 INSERT INTO DDL.employee_education(employee_id, education_id, year) 
-    SELECT employee_id, new_grade_id, year 
-    FROM tt_temp_table_2 AS t2;;
+    SELECT employee_id, education_id, year 
+    FROM tt_temp_table_2 AS t2;
 
 DROP table tt_temp_table_2;
 
@@ -451,22 +459,24 @@ DROP table tt_temp_table_2;
 
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
     SELECT 
-        DISTINCT ON (employee_id, instrument_id, gu.new_grade_id)
+        DISTINCT ON (employee_id, instrument_id, g.grade_id)
         employee_id
     ,   instrument_id
-    ,   gu.new_grade_id
+    ,   g.grade_id   --gu.new_grade_id
     ,   COALESCE(date, update_day) AS date
     ,   employee_instrument_id
     FROM ODS.employee_instrument as t2
     LEFT JOIN ddl.grade_updates AS gu
         ON t2.grade_id = gu.old_grade_id
+    left join ddl.grade g
+    	on gu.new_grade_name = g.grade_name
     WHERE 1=1
         AND employee_id IN (select employee_id from tt_active_employees)
         AND employee_id IS NOT NULL 
         AND instrument_id IS NOT NULL 
-        AND grade_id IS NOT NULL
+        AND t2.grade_id IS NOT NULL
         AND employee_instrument_id IS NOT NULL
-    ORDER BY employee_id, instrument_id, gu.new_grade_id, date ASC;
+    ORDER BY employee_id, instrument_id, g.grade_id, date ASC;
 
 DELETE FROM tt_temp_table_2 WHERE date IS NULL;
 
@@ -499,7 +509,7 @@ INSERT INTO DDL.instrument(instrument_name, instrument_id)
     SELECT instrument_name, new_instrument_id FROM tt_temp_table_1;
 
 INSERT INTO DDL.employee_instrument(employee_id, instrument_id, grade_id, date) 
-    SELECT employee_id, t1.new_instrument_id, t2.new_grade_id, date 
+    SELECT employee_id, t1.new_instrument_id, t2.grade_id, date 
     FROM tt_temp_table_2 AS t2
     INNER JOIN tt_temp_table_1 AS t1
         ON t1.instrument_id = t2.instrument_id;
@@ -520,22 +530,24 @@ CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_1 AS
 
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
     SELECT 
-        DISTINCT ON (employee_id, platform_id, gu.new_grade_id)
+        DISTINCT ON (employee_id, platform_id, g.grade_id)
         employee_id
     ,   platform_id
-    ,   gu.new_grade_id
+    ,   g.grade_id--gu.new_grade_id
     ,   COALESCE(date, update_day) AS date
     ,   employee_platform_id
     FROM ODS.employee_platform as t2
     LEFT JOIN ddl.grade_updates AS gu
         ON t2.grade_id = gu.old_grade_id
+    left join ddl.grade g
+    	on gu.new_grade_name = g.grade_name
     WHERE 1=1
         AND employee_id IN (select employee_id from tt_active_employees)
         AND employee_id IS NOT NULL 
         AND platform_id IS NOT NULL 
-        AND grade_id IS NOT NULL
+        AND t2.grade_id IS NOT NULL
         AND employee_platform_id IS NOT NULL
-    ORDER BY employee_id, platform_id, gu.new_grade_id, date ASC;
+    ORDER BY employee_id, platform_id, g.grade_id, date ASC;
 
 DELETE FROM tt_temp_table_2 WHERE date IS NULL;
 
@@ -568,7 +580,7 @@ INSERT INTO DDL.platform(platform_name, platform_id)
     SELECT platform_name, new_platform_id FROM tt_temp_table_1;
 
 INSERT INTO DDL.employee_platform(employee_id, platform_id, grade_id, date) 
-    SELECT employee_id, t1.new_platform_id, t2.new_grade_id, date 
+    SELECT employee_id, t1.new_platform_id, t2.grade_id, date 
     FROM tt_temp_table_2 AS t2
     INNER JOIN tt_temp_table_1 AS t1
         ON t1.platform_id = t2.platform_id;
@@ -589,22 +601,24 @@ CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_1 AS
 
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
     SELECT 
-        DISTINCT ON (employee_id, ide_id, gu.new_grade_id)
+        DISTINCT ON (employee_id, ide_id, g.grade_id)
         employee_id
     ,   ide_id
-    ,   gu.new_grade_id
+    ,   g.grade_id   --gu.new_grade_id
     ,   COALESCE(date, update_day) AS date
     ,   employee_ide_id
     FROM ODS.employee_ide as t2
     LEFT JOIN ddl.grade_updates AS gu
         ON t2.grade_id = gu.old_grade_id
+    left join ddl.grade g
+    	on gu.new_grade_name = g.grade_name
     WHERE 1=1
         AND employee_id IN (select employee_id from tt_active_employees)
         AND employee_id IS NOT NULL 
         AND ide_id IS NOT NULL 
-        AND grade_id IS NOT NULL
+        AND t2.grade_id IS NOT NULL
         AND employee_ide_id IS NOT NULL
-    ORDER BY employee_id, ide_id, gu.new_grade_id, date ASC;
+    ORDER BY employee_id, ide_id, g.grade_id, date ASC;
 
 DELETE FROM tt_temp_table_2 WHERE date IS NULL;
 
@@ -637,7 +651,7 @@ INSERT INTO DDL.ide(ide_name, ide_id)
     SELECT ide_name, new_ide_id FROM tt_temp_table_1;
 
 INSERT INTO DDL.employee_ide(employee_id, ide_id, grade_id, date) 
-    SELECT employee_id, t1.new_ide_id, t2.new_grade_id, date 
+    SELECT employee_id, t1.new_ide_id, t2.grade_id, date 
     FROM tt_temp_table_2 AS t2
     INNER JOIN tt_temp_table_1 AS t1
         ON t1.ide_id = t2.ide_id;
@@ -659,22 +673,24 @@ CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_1 AS
 
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
     SELECT 
-        DISTINCT ON (employee_id, technology_id, gu.new_grade_id)
+        DISTINCT ON (employee_id, technology_id, g.grade_id)
         employee_id
     ,   technology_id
-    ,   gu.new_grade_id
+    ,   g.grade_id   --gu.new_grade_id
     ,   COALESCE(date, update_day) AS date
     ,   employee_technology_id
     FROM ODS.employee_technology as t2
     LEFT JOIN ddl.grade_updates AS gu
         ON t2.grade_id = gu.old_grade_id
+    left join ddl.grade g
+    	on gu.new_grade_name = g.grade_name
     WHERE 1=1
         AND employee_id IN (select employee_id from tt_active_employees)
         AND employee_id IS NOT NULL 
         AND technology_id IS NOT NULL 
-        AND grade_id IS NOT NULL
+        AND t2.grade_id IS NOT NULL
         AND employee_technology_id IS NOT NULL
-    ORDER BY employee_id, technology_id, gu.new_grade_id, date ASC;
+    ORDER BY employee_id, technology_id, g.grade_id, date ASC;
 
 DELETE FROM tt_temp_table_2 WHERE date IS NULL;
 
@@ -707,7 +723,7 @@ INSERT INTO DDL.technology(technology_name, technology_id)
     SELECT technology_name, new_technology_id FROM tt_temp_table_1;
 
 INSERT INTO DDL.employee_technology(employee_id, technology_id, grade_id, date) 
-    SELECT employee_id, t1.new_technology_id, t2.new_grade_id, date 
+    SELECT employee_id, t1.new_technology_id, t2.grade_id, date 
     FROM tt_temp_table_2 AS t2
     INNER JOIN tt_temp_table_1 AS t1
         ON t1.technology_id = t2.technology_id;
@@ -729,22 +745,24 @@ CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_1 AS
 
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
     SELECT 
-        DISTINCT ON (employee_id, system_type_id, gu.new_grade_id)
+        DISTINCT ON (employee_id, system_type_id, g.grade_id )
         employee_id
     ,   system_type_id
-    ,   gu.new_grade_id
+    ,   g.grade_id   --gu.new_grade_id
     ,   COALESCE(date, update_day) AS date
     ,   employee_system_type_id
     FROM ODS.employee_system_type as t2
     LEFT JOIN ddl.grade_updates AS gu
         ON t2.grade_id = gu.old_grade_id
+    left join ddl.grade g
+    	on gu.new_grade_name = g.grade_name
     WHERE 1=1
         AND employee_id IN (select employee_id from tt_active_employees)
         AND employee_id IS NOT NULL 
         AND system_type_id IS NOT NULL 
-        AND grade_id IS NOT NULL
+        AND t2.grade_id IS NOT NULL
         AND employee_system_type_id IS NOT NULL
-    ORDER BY employee_id, system_type_id, gu.new_grade_id, date ASC;
+    ORDER BY employee_id, system_type_id, g.grade_id , date ASC;
 
 DELETE FROM tt_temp_table_2 WHERE date IS NULL;
 
@@ -777,7 +795,7 @@ INSERT INTO DDL.system_type(system_type_name, system_type_id)
     SELECT system_type_name, new_system_type_id FROM tt_temp_table_1;
 
 INSERT INTO DDL.employee_system_type(employee_id, system_type_id, grade_id, date) 
-    SELECT employee_id, t1.new_system_type_id, t2.new_grade_id, date 
+    SELECT employee_id, t1.new_system_type_id, t2.grade_id, date 
     FROM tt_temp_table_2 AS t2
     INNER JOIN tt_temp_table_1 AS t1
         ON t1.system_type_id = t2.system_type_id;
@@ -799,22 +817,24 @@ CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_1 AS
 
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
     SELECT 
-        DISTINCT ON (employee_id, framework_id, gu.new_grade_id)
+        DISTINCT ON (employee_id, framework_id, g.grade_id)
         employee_id
     ,   framework_id
-    ,   gu.new_grade_id
+    ,   g.grade_id   --gu.new_grade_id
     ,   COALESCE(date, update_day) AS date
     ,   employee_framework_id
     FROM ODS.employee_framework as t2
     LEFT JOIN ddl.grade_updates AS gu
         ON t2.grade_id = gu.old_grade_id
+    left join ddl.grade g
+    	on gu.new_grade_name = g.grade_name
     WHERE 1=1
         AND employee_id IN (select employee_id from tt_active_employees)
         AND employee_id IS NOT NULL 
         AND framework_id IS NOT NULL 
-        AND grade_id IS NOT NULL
+        AND t2.grade_id IS NOT NULL
         AND employee_framework_id IS NOT NULL
-    ORDER BY employee_id, framework_id, gu.new_grade_id, date ASC;
+    ORDER BY employee_id, framework_id, g.grade_id, date ASC;
 
 DELETE FROM tt_temp_table_2 WHERE date IS NULL;
 
@@ -847,7 +867,7 @@ INSERT INTO DDL.framework(framework_name, framework_id)
     SELECT framework_name, new_framework_id FROM tt_temp_table_1;
 
 INSERT INTO DDL.employee_framework(employee_id, framework_id, grade_id, date) 
-    SELECT employee_id, t1.new_framework_id, t2.new_grade_id, date 
+    SELECT employee_id, t1.new_framework_id, t2.grade_id, date 
     FROM tt_temp_table_2 AS t2
     INNER JOIN tt_temp_table_1 AS t1
         ON t1.framework_id = t2.framework_id;
@@ -868,18 +888,22 @@ CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_1 AS
     WHERE language_name IS NOT NULL AND language_id IS NOT NULL;
 
 CREATE TEMP TABLE IF NOT EXISTS tt_temp_table_2 AS
-    SELECT 
-        DISTINCT ON (employee_id, language_id, language_level_id)
+     SELECT 
+        DISTINCT ON (employee_id, language_id, g.language_level_id)
         employee_id
     ,   language_id
-    ,   language_level_id
+    ,   g.language_level_id
     ,   employee_language_id
-    FROM ODS.employee_language
+    FROM ODS.employee_language as t2
+    LEFT JOIN ddl.grade_updates AS gu
+        ON t2.language_level_id = gu.old_grade_id
+    left join ddl.language_level g
+    	on gu.new_grade_name = g.language_level_name
     WHERE 1=1
         AND employee_id IN (select employee_id from tt_active_employees)
         AND employee_id IS NOT NULL 
         AND language_id IS NOT NULL 
-        AND language_level_id IS NOT NULL
+        AND t2.language_level_id IS NOT NULL
         AND employee_language_id IS NOT NULL;
 
 INSERT INTO stg.error(run_date, table_name,	filtered_rows)
@@ -912,12 +936,12 @@ INSERT INTO DDL.language(language_name, language_id)
     SELECT language_name, new_language_id FROM tt_temp_table_1;
 
 INSERT INTO DDL.employee_language(employee_id, language_id, language_level_id) 
-    SELECT employee_id, t1.new_language_id, t3.new_grade_id 
+    SELECT employee_id, t1.new_language_id, language_level_id 
     FROM tt_temp_table_2 AS t2
     INNER JOIN tt_temp_table_1 AS t1
-        ON t1.language_id = t2.language_id
-    LEFT JOIN DDL.grade_updates AS t3
-        ON t2.language_level_id = t3.old_grade_id;
+        ON t1.language_id = t2.language_id;
+    -- LEFT JOIN DDL.grade_updates AS t3
+    --     ON t2.language_level_id = t3.old_grade_id;
 
 DROP table tt_temp_table_1;
 DROP table tt_temp_table_2;
