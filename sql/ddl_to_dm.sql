@@ -225,8 +225,6 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on dd.date = ed.date  
 	left join dm.dim_skill_level as dsl
 		on dsl.skill_level_id = ed.grade_id and dsl.skill_level_type = 1;           
-	-- left join dm.dim_skill_level dsl
-	-- 	on dsl.skill_level_id = ed.grade_id and skill_level_type = 1;
 
 -- industry (skill_type = 3, skill_level_type = 2)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -239,8 +237,6 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on dd.date = ed.date
 	left join dm.dim_skill_level as dsl
 		on dsl.skill_level_id = ed.industry_level_id and dsl.skill_level_type = 2;                
-	-- left join dm.dim_skill_level dsl
-	-- 	on dsl.skill_level_id = ed.industry_level_id and skill_level_type = 2;
 
 -- subject (skill_type = 4, skill_level_type = 2)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -265,8 +261,6 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on dd.date = ed.date
 	left join dm.dim_skill_level as dsl
 		on dsl.skill_level_id = ed.grade_id and dsl.skill_level_type = 1;                      
-	-- left join dm.dim_skill_level dsl
-	-- 	on dsl.skill_level_id = ed.grade_id and skill_level_type = 1;
 
 -- ide (skill_type = 6, skill_level_type = 1)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -339,8 +333,6 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on dd.date = '2001-09-26'::date                     		-- Дата должна соответствовать заданной в dim_date
 	left join dm.dim_skill_level as dsl
 		on dsl.skill_level_id = ed.language_level_id and dsl.skill_level_type = 4;
-	-- left join dm.dim_skill_level dsl
-	-- 	on dsl.skill_level_id = ed.language_level_id and skill_level_type = 4;
 
 -- education (skill_type = 12, skill_level_type = 3)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -353,8 +345,6 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 	 	on dsl.skill_level_id = ed.education_id and skill_level_type = 3
 	left join dm.dim_skills ds  
 		on ds.skill_id = ed.education_id and skill_type = 12;
-	-- left join dm.dim_skill_level dsl
-	-- 	on dsl.skill_level_id = ed.education_id and skill_level_type = 3;
 
 -- Для сотрудников без записей в таблицах (не заполнили или неверно заполнили и мы не перенесли в ddl)
 -- Выдаем дефолтное значение образования 
@@ -375,10 +365,6 @@ FROM (
 -- Неравномерно очищаются данные в таблицах, любой пропуск считаем ошибкой
 
 DELETE FROM DM.fact_empl_skills WHERE employee_key IS NULL;
---DELETE FROM DM.fact_empl_skills WHERE skill_key IS NULL;
--- DELETE FROM DM.fact_empl_skills WHERE date_key IS NULL;     
--- DELETE FROM DM.fact_empl_skills WHERE skill_level_key IS NULL;
-
 
 -- Заполнение 2 куба
 
@@ -806,8 +792,9 @@ WHERE 1=1
 -- Метрики для второго куба
 --------------------------------------
 
--- Годовой прирост грейдов
 -- count_novice_department
+-- Годовой прирост грейдов
+-- Для гистограммы на 2 листе
 
 alter table dm.fact_pos_year add column count_novice_department int4;
 
@@ -1004,8 +991,6 @@ WHERE 1=1
 	and fpy.skill_key= all_cols.skill_key;
 
 
-
-
 -- count_expert_department
 
 alter table dm.fact_pos_year add column count_expert_department int4;
@@ -1055,66 +1040,66 @@ WHERE 1=1
 	and fpy.skill_key= all_cols.skill_key;
 
 
+-- total_novice_department
+-- сумма навыков по грейдам за все время на момент выбранного года и за все предыдущие года
+-- Для гистограммы на 2 листе (при нажатом тумблере)
 
-
--- сумма грейдов
-
--- все грейды за 2022, 2023 тут, раскладываем по колонкам из этой таблицы 
--- Присоединяем к департаменту, позиции, скиллу, году при нужной max_at
+-- сначала формируем времменую таблицу с числом макимальных навыков сотрудников
+-- за 2 последних завершившихся года
 
 CREATE TEMP TABLE IF NOT EXISTS tt_grade_count AS
-select   				-- 6 181
+-- за 2022 год (предпоследний завершившийся)
+select   				
 		max_22.skill_key
 	,	de.position
 	,	de.department
 	,	max_at_2022 as max_at
 	,	count(*) as total_grade_at_department
-	,	2022 as calendar_year
-	from (
-		select
-			fes.employee_key 
-		,	fes.skill_key
-		,	max(dsl.skill_grade) as max_at_2022
-		from dm.fact_empl_skills fes
-		left join dm.dim_skill_level dsl 
-			on fes.skill_level_key = dsl.skill_level_key
-		left join dm.dim_date dd 
-			on fes.date_key = dd.date_key 
-		where dd.calendar_year <= 2022
-		group by fes.employee_key, fes.skill_key
+	,	extract(year from current_date) - 2 as calendar_year
+from (
+	select
+		fes.employee_key 
+	,	fes.skill_key
+	,	max(dsl.skill_grade) as max_at_2022
+	from dm.fact_empl_skills fes
+	left join dm.dim_skill_level dsl 
+		on fes.skill_level_key = dsl.skill_level_key
+	left join dm.dim_date dd 
+		on fes.date_key = dd.date_key 
+	where dd.calendar_year <= extract(year from current_date) - 2
+	group by fes.employee_key, fes.skill_key
 	) as max_22
 left join dm.dim_employee de 
 	on max_22.employee_key = de.employee_key
 group by de.department, de.position, max_22.skill_key, max_at_2022
 union all
-select                               -- Это присоединяем к департаменту, позиции, скиллу в 2023 году
+-- за 2023 год (последний завершившийся)
+select                               
 	max_23.skill_key
 ,	de.position
 ,	de.department
 ,	max_at_2023 as max_at
 ,	count(*) as total_grade_at_department
-,	2023 as calendar_year
+,	extract(year from current_date) - 1 as calendar_year
 from (
-select
-	fes.employee_key 
-,	fes.skill_key
-,	max(dsl.skill_grade) as max_at_2023
-from dm.fact_empl_skills fes
-left join dm.dim_skill_level dsl 
-	on fes.skill_level_key = dsl.skill_level_key
-left join dm.dim_date dd 
-	on fes.date_key = dd.date_key 
-where dd.calendar_year <= 2023
-group by fes.employee_key, fes.skill_key
+	select
+		fes.employee_key 
+	,	fes.skill_key
+	,	max(dsl.skill_grade) as max_at_2023
+	from dm.fact_empl_skills fes
+	left join dm.dim_skill_level dsl 
+		on fes.skill_level_key = dsl.skill_level_key
+	left join dm.dim_date dd 
+		on fes.date_key = dd.date_key 
+	where dd.calendar_year <= extract(year from current_date) - 1
+	group by fes.employee_key, fes.skill_key
 ) as max_23
-    left join dm.dim_employee de 
-	    on max_23.employee_key = de.employee_key
-    group by de.department, de.position, max_23.skill_key, max_at_2023;
+left join dm.dim_employee de 
+	on max_23.employee_key = de.employee_key
+group by de.department, de.position, max_23.skill_key, max_at_2023;
 
 
-
-
--- 
+-- "Раскладываем" по грейдам из сводной таблицы
 
 alter table dm.fact_pos_year add column total_novice_department int4;
 alter table dm.fact_pos_year add column total_junior_department int4;
@@ -1129,53 +1114,53 @@ SET total_novice_department = all_cols.total_novice_department,
     total_senior_department = all_cols.total_senior_department,
     total_expert_department = all_cols.total_expert_department
 FROM (
-select       -- 6 129
-	fpy.position_key 
-,	fpy.department_key 
-,	fpy.year_key 
-,	fpy.skill_key 
-,	coalesce(gc1.total_grade_at_department, 0) as total_novice_department
-,	coalesce(gc2.total_grade_at_department, 0) as total_junior_department
-,	coalesce(gc3.total_grade_at_department, 0) as total_middle_department
-,	coalesce(gc4.total_grade_at_department, 0) as total_senior_department
-,	coalesce(gc5.total_grade_at_department, 0) as total_expert_department
-from dm.fact_pos_year fpy
-left join dm.dim_position dp
-	on fpy.position_key = dp.position_key 
-left join dm.dim_department dd2 
-	on fpy.department_key = dd2.department_key 
-left join dm.dim_year dy 
-	on fpy.year_key = dy.year_key 
-left join tt_grade_count as gc1
-	on dp.position = gc1.position
-	and dd2.department = gc1.department
-	and fpy.skill_key = gc1.skill_key
-	and dy.calendar_year = gc1.calendar_year
-	and gc1.max_at = 1
-left join tt_grade_count as gc2
-	on dp.position = gc2.position
-	and dd2.department = gc2.department
-	and fpy.skill_key = gc2.skill_key
-	and dy.calendar_year = gc2.calendar_year
-	and gc2.max_at = 2
-left join tt_grade_count as gc3
-	on dp.position = gc3.position
-	and dd2.department = gc3.department
-	and fpy.skill_key = gc3.skill_key
-	and dy.calendar_year = gc3.calendar_year
-	and gc3.max_at = 3
-left join tt_grade_count as gc4
-	on dp.position = gc4.position
-	and dd2.department = gc4.department
-	and fpy.skill_key = gc4.skill_key
-	and dy.calendar_year = gc4.calendar_year
-	and gc4.max_at = 4
-left join tt_grade_count as gc5
-	on dp.position = gc5.position
-	and dd2.department = gc5.department
-	and fpy.skill_key = gc5.skill_key
-	and dy.calendar_year = gc5.calendar_year
-	and gc5.max_at = 5
+	select       -- 6 129
+		fpy.position_key 
+	,	fpy.department_key 
+	,	fpy.year_key 
+	,	fpy.skill_key 
+	,	coalesce(gc1.total_grade_at_department, 0) as total_novice_department
+	,	coalesce(gc2.total_grade_at_department, 0) as total_junior_department
+	,	coalesce(gc3.total_grade_at_department, 0) as total_middle_department
+	,	coalesce(gc4.total_grade_at_department, 0) as total_senior_department
+	,	coalesce(gc5.total_grade_at_department, 0) as total_expert_department
+	from dm.fact_pos_year fpy
+	left join dm.dim_position dp
+		on fpy.position_key = dp.position_key 
+	left join dm.dim_department dd2 
+		on fpy.department_key = dd2.department_key 
+	left join dm.dim_year dy 
+		on fpy.year_key = dy.year_key 
+	left join tt_grade_count as gc1
+		on dp.position = gc1.position
+		and dd2.department = gc1.department
+		and fpy.skill_key = gc1.skill_key
+		and dy.calendar_year = gc1.calendar_year
+		and gc1.max_at = 1
+	left join tt_grade_count as gc2
+		on dp.position = gc2.position
+		and dd2.department = gc2.department
+		and fpy.skill_key = gc2.skill_key
+		and dy.calendar_year = gc2.calendar_year
+		and gc2.max_at = 2
+	left join tt_grade_count as gc3
+		on dp.position = gc3.position
+		and dd2.department = gc3.department
+		and fpy.skill_key = gc3.skill_key
+		and dy.calendar_year = gc3.calendar_year
+		and gc3.max_at = 3
+	left join tt_grade_count as gc4
+		on dp.position = gc4.position
+		and dd2.department = gc4.department
+		and fpy.skill_key = gc4.skill_key
+		and dy.calendar_year = gc4.calendar_year
+		and gc4.max_at = 4
+	left join tt_grade_count as gc5
+		on dp.position = gc5.position
+		and dd2.department = gc5.department
+		and fpy.skill_key = gc5.skill_key
+		and dy.calendar_year = gc5.calendar_year
+		and gc5.max_at = 5
 ) all_cols
 WHERE 1=1
 	and fpy.position_key = all_cols.position_key
@@ -1187,7 +1172,8 @@ WHERE 1=1
 drop table tt_grade_count;
 
 -- total_grades
--- Число грейдов / число людей
+-- Число грейдов / число людей в департаменте в определенном году 
+-- Для облака тэгов
 
 alter table dm.fact_pos_year add column total_grades numeric;    
 
@@ -1215,6 +1201,8 @@ WHERE 1=1
 
 
 -- pos_skill_level
+-- Средний уровень навыка
+-- Для графика "Средний уровень в: ..."
 
 alter table dm.fact_pos_year add column pos_skill_level numeric; 
 
@@ -1240,7 +1228,7 @@ left join
 		+ total_junior_department
 		+ total_middle_department
 		+ total_senior_department
-		+ total_expert_department) as pos_level -- / dd.department_count / dp.position_count
+		+ total_expert_department) as pos_level 
 from dm.fact_pos_year fpy
 left join dm.dim_year dy 
 	on fpy.year_key = dy.year_key
