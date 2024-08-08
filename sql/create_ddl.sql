@@ -174,12 +174,12 @@ CREATE TABLE IF NOT EXISTS DDL.employee_programming_language (
 	date date
 );
 
--- Новая таблица с переводом старх грейдов в новые
+-- Новая таблица с переводом старых грейдов в новые
 CREATE TABLE IF NOT EXISTS ddl.grade_updates(
     old_grade_name TEXT,
     new_grade_name TEXT,
     old_grade_id int4,
     grade_level int4,
-    new_grade_id SERIAL,
+	new_grade_id int4,
 	grade_type int4
 );
