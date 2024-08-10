@@ -211,10 +211,8 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on ds.skill_id = ed.bd_id and skill_type = 1  
 	left join dm.dim_date dd
 		on dd.date = ed.date                      
-	left join ddl.grade_updates gu 
-		on gu.new_grade_id = ed.grade_id 
 	left join dm.dim_skill_level as dsl
-		on dsl.grade_name = gu.new_grade_name;
+		on dsl.skill_level_id = ed.grade_id and dsl.skill_level_type = 1;
 
 -- instrument (skill_type = 2, skill_level_type = 1)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -225,12 +223,8 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on ds.skill_id = ed.instrument_id and skill_type = 2  
 	left join dm.dim_date dd
 		on dd.date = ed.date  
-	left join ddl.grade_updates gu 
-		on gu.new_grade_id = ed.grade_id 
 	left join dm.dim_skill_level as dsl
-		on dsl.grade_name = gu.new_grade_name;                    
-	-- left join dm.dim_skill_level dsl
-	-- 	on dsl.skill_level_id = ed.grade_id and skill_level_type = 1;
+		on dsl.skill_level_id = ed.grade_id and dsl.skill_level_type = 1;           
 
 -- industry (skill_type = 3, skill_level_type = 2)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -241,12 +235,8 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on ds.skill_id = ed.industry_id and skill_type = 3  
 	left join dm.dim_date dd
 		on dd.date = ed.date
-	left join ddl.grade_updates gu 
-		on gu.new_grade_id = ed.industry_level_id 
 	left join dm.dim_skill_level as dsl
-		on dsl.grade_name = gu.new_grade_name;                      
-	-- left join dm.dim_skill_level dsl
-	-- 	on dsl.skill_level_id = ed.industry_level_id and skill_level_type = 2;
+		on dsl.skill_level_id = ed.industry_level_id and dsl.skill_level_type = 2;                
 
 -- subject (skill_type = 4, skill_level_type = 2)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -255,10 +245,8 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on de.employee_id = ed.employee_id             
 	left join dm.dim_skills ds  
 		on ds.skill_id = ed.subject_id and skill_type = 4  
-	left join ddl.grade_updates gu 
-		on gu.new_grade_id = ed.subject_id 
 	left join dm.dim_skill_level as dsl
-		on dsl.grade_name = gu.new_grade_name
+		on dsl.skill_level_id = ed.subject_level_id and dsl.skill_level_type = 2      
 	left join dm.dim_date dd
 		on dd.date = ed.date;
 
@@ -271,12 +259,8 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on ds.skill_id = ed.platform_id and skill_type = 5  
 	left join dm.dim_date dd
 		on dd.date = ed.date
-	left join ddl.grade_updates gu 
-		on gu.new_grade_id = ed.grade_id 
 	left join dm.dim_skill_level as dsl
-		on dsl.grade_name = gu.new_grade_name;                      
-	-- left join dm.dim_skill_level dsl
-	-- 	on dsl.skill_level_id = ed.grade_id and skill_level_type = 1;
+		on dsl.skill_level_id = ed.grade_id and dsl.skill_level_type = 1;                      
 
 -- ide (skill_type = 6, skill_level_type = 1)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -287,10 +271,8 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on ds.skill_id = ed.ide_id and skill_type = 6  
 	left join dm.dim_date dd
 		on dd.date = ed.date                      
-	left join ddl.grade_updates gu 
-		on gu.new_grade_id = ed.grade_id 
 	left join dm.dim_skill_level as dsl
-		on dsl.grade_name = gu.new_grade_name;
+		on dsl.skill_level_id = ed.grade_id and dsl.skill_level_type = 1;
 
 -- technology (skill_type = 7, skill_level_type = 1)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -301,10 +283,8 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on ds.skill_id = ed.technology_id and skill_type = 7  
 	left join dm.dim_date dd
 		on dd.date = ed.date                      
-	left join ddl.grade_updates gu 
-		on gu.new_grade_id = ed.grade_id 
 	left join dm.dim_skill_level as dsl
-		on dsl.grade_name = gu.new_grade_name;
+		on dsl.skill_level_id = ed.grade_id and dsl.skill_level_type = 1;
 
 -- system_type (skill_type = 8, skill_level_type = 1)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -315,10 +295,8 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on ds.skill_id = ed.system_type_id and skill_type = 8  
 	left join dm.dim_date dd
 		on dd.date = ed.date                      
-	left join ddl.grade_updates gu 
-		on gu.new_grade_id = ed.grade_id 
 	left join dm.dim_skill_level as dsl
-		on dsl.grade_name = gu.new_grade_name;
+		on dsl.skill_level_id = ed.grade_id and dsl.skill_level_type = 1;
 
 -- framework (skill_type = 9, skill_level_type = 1)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -329,10 +307,8 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on ds.skill_id = ed.framework_id and skill_type = 9  
 	left join dm.dim_date dd
 		on dd.date = ed.date                      
-	left join ddl.grade_updates gu 
-		on gu.new_grade_id = ed.grade_id 
 	left join dm.dim_skill_level as dsl
-		on dsl.grade_name = gu.new_grade_name;
+		on dsl.skill_level_id = ed.grade_id and dsl.skill_level_type = 1;
 
 -- programming_language (skill_type = 10, skill_level_type = 1)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -343,10 +319,8 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on ds.skill_id = ed.programming_language_id and skill_type = 10  
 	left join dm.dim_date dd
 		on dd.date = ed.date                      
-	left join ddl.grade_updates gu 
-		on gu.new_grade_id = ed.grade_id 
 	left join dm.dim_skill_level as dsl
-		on dsl.grade_name = gu.new_grade_name;
+		on dsl.skill_level_id = ed.grade_id and dsl.skill_level_type = 1;
 
 -- language (skill_type = 11, skill_level_type = 4)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -357,12 +331,8 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on ds.skill_id = ed.language_id and skill_type = 11  
 	left join dm.dim_date dd
 		on dd.date = '2001-09-26'::date                     		-- Дата должна соответствовать заданной в dim_date
-	left join ddl.grade_updates gu 
-		on gu.new_grade_id = ed.language_level_id 
 	left join dm.dim_skill_level as dsl
-		on dsl.grade_name = gu.new_grade_name;
-	-- left join dm.dim_skill_level dsl
-	-- 	on dsl.skill_level_id = ed.language_level_id and skill_level_type = 4;
+		on dsl.skill_level_id = ed.language_level_id and dsl.skill_level_type = 4;
 
 -- education (skill_type = 12, skill_level_type = 3)
 INSERT INTO DM.fact_empl_skills (employee_key, skill_key, date_key,	skill_level_key)
@@ -371,14 +341,10 @@ select de.employee_key, ds.skill_key, dd.date_key, dsl.skill_level_key from ddl.
 		on de.employee_id = ed.employee_id               
 	left join dm.dim_date dd
 		on dd.date = '2001-09-26'::date                   		   -- Дата должна соответствовать заданной в dim_date
-	left join ddl.grade_updates gu 
-		on gu.new_grade_id = ed.education_id 
-	left join dm.dim_skill_level as dsl
-		on dsl.grade_name = gu.new_grade_name
+	left join dm.dim_skill_level dsl
+	 	on dsl.skill_level_id = ed.education_id and skill_level_type = 3
 	left join dm.dim_skills ds  
-		on ds.skill_name = gu.new_grade_name;
-	-- left join dm.dim_skill_level dsl
-	-- 	on dsl.skill_level_id = ed.education_id and skill_level_type = 3;
+		on ds.skill_id = ed.education_id and skill_type = 12;
 
 -- Для сотрудников без записей в таблицах (не заполнили или неверно заполнили и мы не перенесли в ddl)
 -- Выдаем дефолтное значение образования 
@@ -399,10 +365,6 @@ FROM (
 -- Неравномерно очищаются данные в таблицах, любой пропуск считаем ошибкой
 
 DELETE FROM DM.fact_empl_skills WHERE employee_key IS NULL;
---DELETE FROM DM.fact_empl_skills WHERE skill_key IS NULL;
--- DELETE FROM DM.fact_empl_skills WHERE date_key IS NULL;     
--- DELETE FROM DM.fact_empl_skills WHERE skill_level_key IS NULL;
-
 
 -- Заполнение 2 куба
 
@@ -799,14 +761,40 @@ FROM (
 ) AS imp
 	WHERE fes.employee_key = imp.employee_key;
 
+-- skill_popularity
+-- Число записей о навыке для каждой из должностей за все время
+-- Для сортировки в блоке "Область развития"
+
+ALTER TABLE DM.fact_empl_skills ADD COLUMN skill_popularity int4;
+
+-- Заполнение
+UPDATE DM.fact_empl_skills AS fes 
+SET skill_popularity = inner_table.skill_popularity
+FROM (
+SELECT 
+		fes.employee_key
+	, 	fes.skill_key
+	, 	fes.date_key
+	, 	fes.skill_level_key
+	,	COUNT(*) over (partition by fes.skill_key, de.position) as skill_popularity
+from dm.fact_empl_skills fes
+left JOIN dm.dim_employee de
+		ON fes.employee_key = de.employee_key
+) AS inner_table
+WHERE 1=1
+	AND fes.employee_key = inner_table.employee_key 
+	AND fes.skill_key = inner_table.skill_key 
+	AND fes.date_key = inner_table.date_key 
+	AND fes.skill_level_key = inner_table.skill_level_key;
 
 
 --------------------------------------
 -- Метрики для второго куба
 --------------------------------------
 
--- Годовой прирост грейдов
 -- count_novice_department
+-- Годовой прирост грейдов
+-- Для гистограммы на 2 листе
 
 alter table dm.fact_pos_year add column count_novice_department int4;
 
@@ -1003,8 +991,6 @@ WHERE 1=1
 	and fpy.skill_key= all_cols.skill_key;
 
 
-
-
 -- count_expert_department
 
 alter table dm.fact_pos_year add column count_expert_department int4;
@@ -1054,66 +1040,66 @@ WHERE 1=1
 	and fpy.skill_key= all_cols.skill_key;
 
 
+-- total_novice_department
+-- сумма навыков по грейдам за все время на момент выбранного года и за все предыдущие года
+-- Для гистограммы на 2 листе (при нажатом тумблере)
 
-
--- сумма грейдов
-
--- все грейды за 2022, 2023 тут, раскладываем по колонкам из этой таблицы 
--- Присоединяем к департаменту, позиции, скиллу, году при нужной max_at
+-- сначала формируем времменую таблицу с числом макимальных навыков сотрудников
+-- за 2 последних завершившихся года
 
 CREATE TEMP TABLE IF NOT EXISTS tt_grade_count AS
-select   				-- 6 181
+-- за 2022 год (предпоследний завершившийся)
+select   				
 		max_22.skill_key
 	,	de.position
 	,	de.department
 	,	max_at_2022 as max_at
 	,	count(*) as total_grade_at_department
-	,	2022 as calendar_year
-	from (
-		select
-			fes.employee_key 
-		,	fes.skill_key
-		,	max(dsl.skill_grade) as max_at_2022
-		from dm.fact_empl_skills fes
-		left join dm.dim_skill_level dsl 
-			on fes.skill_level_key = dsl.skill_level_key
-		left join dm.dim_date dd 
-			on fes.date_key = dd.date_key 
-		where dd.calendar_year <= 2022
-		group by fes.employee_key, fes.skill_key
+	,	extract(year from current_date) - 2 as calendar_year
+from (
+	select
+		fes.employee_key 
+	,	fes.skill_key
+	,	max(dsl.skill_grade) as max_at_2022
+	from dm.fact_empl_skills fes
+	left join dm.dim_skill_level dsl 
+		on fes.skill_level_key = dsl.skill_level_key
+	left join dm.dim_date dd 
+		on fes.date_key = dd.date_key 
+	where dd.calendar_year <= extract(year from current_date) - 2
+	group by fes.employee_key, fes.skill_key
 	) as max_22
 left join dm.dim_employee de 
 	on max_22.employee_key = de.employee_key
 group by de.department, de.position, max_22.skill_key, max_at_2022
 union all
-select                               -- Это присоединяем к департаменту, позиции, скиллу в 2023 году
+-- за 2023 год (последний завершившийся)
+select                               
 	max_23.skill_key
 ,	de.position
 ,	de.department
 ,	max_at_2023 as max_at
 ,	count(*) as total_grade_at_department
-,	2023 as calendar_year
+,	extract(year from current_date) - 1 as calendar_year
 from (
-select
-	fes.employee_key 
-,	fes.skill_key
-,	max(dsl.skill_grade) as max_at_2023
-from dm.fact_empl_skills fes
-left join dm.dim_skill_level dsl 
-	on fes.skill_level_key = dsl.skill_level_key
-left join dm.dim_date dd 
-	on fes.date_key = dd.date_key 
-where dd.calendar_year <= 2023
-group by fes.employee_key, fes.skill_key
+	select
+		fes.employee_key 
+	,	fes.skill_key
+	,	max(dsl.skill_grade) as max_at_2023
+	from dm.fact_empl_skills fes
+	left join dm.dim_skill_level dsl 
+		on fes.skill_level_key = dsl.skill_level_key
+	left join dm.dim_date dd 
+		on fes.date_key = dd.date_key 
+	where dd.calendar_year <= extract(year from current_date) - 1
+	group by fes.employee_key, fes.skill_key
 ) as max_23
-    left join dm.dim_employee de 
-	    on max_23.employee_key = de.employee_key
-    group by de.department, de.position, max_23.skill_key, max_at_2023;
+left join dm.dim_employee de 
+	on max_23.employee_key = de.employee_key
+group by de.department, de.position, max_23.skill_key, max_at_2023;
 
 
-
-
--- 
+-- "Раскладываем" по грейдам из сводной таблицы
 
 alter table dm.fact_pos_year add column total_novice_department int4;
 alter table dm.fact_pos_year add column total_junior_department int4;
@@ -1128,53 +1114,53 @@ SET total_novice_department = all_cols.total_novice_department,
     total_senior_department = all_cols.total_senior_department,
     total_expert_department = all_cols.total_expert_department
 FROM (
-select       -- 6 129
-	fpy.position_key 
-,	fpy.department_key 
-,	fpy.year_key 
-,	fpy.skill_key 
-,	coalesce(gc1.total_grade_at_department, 0) as total_novice_department
-,	coalesce(gc2.total_grade_at_department, 0) as total_junior_department
-,	coalesce(gc3.total_grade_at_department, 0) as total_middle_department
-,	coalesce(gc4.total_grade_at_department, 0) as total_senior_department
-,	coalesce(gc5.total_grade_at_department, 0) as total_expert_department
-from dm.fact_pos_year fpy
-left join dm.dim_position dp
-	on fpy.position_key = dp.position_key 
-left join dm.dim_department dd2 
-	on fpy.department_key = dd2.department_key 
-left join dm.dim_year dy 
-	on fpy.year_key = dy.year_key 
-left join tt_grade_count as gc1
-	on dp.position = gc1.position
-	and dd2.department = gc1.department
-	and fpy.skill_key = gc1.skill_key
-	and dy.calendar_year = gc1.calendar_year
-	and gc1.max_at = 1
-left join tt_grade_count as gc2
-	on dp.position = gc2.position
-	and dd2.department = gc2.department
-	and fpy.skill_key = gc2.skill_key
-	and dy.calendar_year = gc2.calendar_year
-	and gc2.max_at = 2
-left join tt_grade_count as gc3
-	on dp.position = gc3.position
-	and dd2.department = gc3.department
-	and fpy.skill_key = gc3.skill_key
-	and dy.calendar_year = gc3.calendar_year
-	and gc3.max_at = 3
-left join tt_grade_count as gc4
-	on dp.position = gc4.position
-	and dd2.department = gc4.department
-	and fpy.skill_key = gc4.skill_key
-	and dy.calendar_year = gc4.calendar_year
-	and gc4.max_at = 4
-left join tt_grade_count as gc5
-	on dp.position = gc5.position
-	and dd2.department = gc5.department
-	and fpy.skill_key = gc5.skill_key
-	and dy.calendar_year = gc5.calendar_year
-	and gc5.max_at = 5
+	select       -- 6 129
+		fpy.position_key 
+	,	fpy.department_key 
+	,	fpy.year_key 
+	,	fpy.skill_key 
+	,	coalesce(gc1.total_grade_at_department, 0) as total_novice_department
+	,	coalesce(gc2.total_grade_at_department, 0) as total_junior_department
+	,	coalesce(gc3.total_grade_at_department, 0) as total_middle_department
+	,	coalesce(gc4.total_grade_at_department, 0) as total_senior_department
+	,	coalesce(gc5.total_grade_at_department, 0) as total_expert_department
+	from dm.fact_pos_year fpy
+	left join dm.dim_position dp
+		on fpy.position_key = dp.position_key 
+	left join dm.dim_department dd2 
+		on fpy.department_key = dd2.department_key 
+	left join dm.dim_year dy 
+		on fpy.year_key = dy.year_key 
+	left join tt_grade_count as gc1
+		on dp.position = gc1.position
+		and dd2.department = gc1.department
+		and fpy.skill_key = gc1.skill_key
+		and dy.calendar_year = gc1.calendar_year
+		and gc1.max_at = 1
+	left join tt_grade_count as gc2
+		on dp.position = gc2.position
+		and dd2.department = gc2.department
+		and fpy.skill_key = gc2.skill_key
+		and dy.calendar_year = gc2.calendar_year
+		and gc2.max_at = 2
+	left join tt_grade_count as gc3
+		on dp.position = gc3.position
+		and dd2.department = gc3.department
+		and fpy.skill_key = gc3.skill_key
+		and dy.calendar_year = gc3.calendar_year
+		and gc3.max_at = 3
+	left join tt_grade_count as gc4
+		on dp.position = gc4.position
+		and dd2.department = gc4.department
+		and fpy.skill_key = gc4.skill_key
+		and dy.calendar_year = gc4.calendar_year
+		and gc4.max_at = 4
+	left join tt_grade_count as gc5
+		on dp.position = gc5.position
+		and dd2.department = gc5.department
+		and fpy.skill_key = gc5.skill_key
+		and dy.calendar_year = gc5.calendar_year
+		and gc5.max_at = 5
 ) all_cols
 WHERE 1=1
 	and fpy.position_key = all_cols.position_key
@@ -1186,7 +1172,8 @@ WHERE 1=1
 drop table tt_grade_count;
 
 -- total_grades
--- Число грейдов / число людей
+-- Число грейдов / число людей в департаменте в определенном году 
+-- Для облака тэгов
 
 alter table dm.fact_pos_year add column total_grades numeric;    
 
@@ -1214,6 +1201,8 @@ WHERE 1=1
 
 
 -- pos_skill_level
+-- Средний уровень навыка
+-- Для графика "Средний уровень в: ..."
 
 alter table dm.fact_pos_year add column pos_skill_level numeric; 
 
@@ -1239,7 +1228,7 @@ left join
 		+ total_junior_department
 		+ total_middle_department
 		+ total_senior_department
-		+ total_expert_department) as pos_level -- / dd.department_count / dp.position_count
+		+ total_expert_department) as pos_level 
 from dm.fact_pos_year fpy
 left join dm.dim_year dy 
 	on fpy.year_key = dy.year_key
@@ -1263,703 +1252,3 @@ WHERE 1=1
 	and fpy.department_key = all_cols.department_key
 	and fpy.year_key = all_cols.year_key
 	and fpy.skill_key= all_cols.skill_key;
-
-
-
-	-- SELECT 
-	-- 	fes.employee_key
-	-- ,	fes.skill_key 
-	-- ,	fes.date_key 
-	-- ,	fes.skill_level_key 
-	-- ,	imp.new_skills_current
-	-- ,	imp.new_skills_last
-	-- ,	imp.improvement_percent
-	-- FROM dm.fact_empl_skills fes 
-	-- LEFT JOIN (
-
--- ) AS inner_table
--- WHERE 1=1
--- 	AND fes.employee_key = inner_table.employee_key 
--- 	AND fes.skill_key = inner_table.skill_key
--- 	AND fes.date_key = inner_table.date_key 
--- 	AND fes.skill_level_key = inner_table.skill_level_key;
-
-
-
-
--- Облако тэгов
--- добавить вычисление прошлого года
--- count_last_year_skill
-
--- используем связку
--- sum(count_skill_per_year_employee) -- еще и по каждому скиллу?
--- + department + position
--- + фильтр по году
--- -- new_skills_current
-
-
-
--- ???
-
-
-
-
-
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN count_last_year_skill int4;
-
--- -- Заполнение
--- UPDATE DM.fact_empl_skills AS fes 
--- SET count_last_year_skill = inner_table.count_last_year_skill
--- FROM (
--- 	select 
--- 		fes.employee_key
--- 	,	fes.skill_key 
--- 	,	fes.date_key 
--- 	,	fes.skill_level_key
--- 	,	coalesce(cs.count_skills_2023, 0) as count_last_year_skill
--- 	from dm.fact_empl_skills fes
--- 	left join dm.dim_employee de2
--- 		on fes.employee_key = de2.employee_key
--- 	left join(
--- 		select distinct de.department
--- 		,	coalesce(sc.count_skills_2023, 0)
--- 		,	cou.count_people
--- 			from dm.dim_employee de
--- 		left join (SELECT 
--- 			de.department 
--- 		,	SUM(fes.count_skills) as count_skills_2023
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_employee de
--- 			ON fes.employee_key = de.employee_key
--- 		LEFT JOIN dm.dim_date dd
--- 			ON fes.date_key = dd.date_key
--- 		WHERE dd.calendar_year = 2023
--- 		group by de.department
--- 		) as sc
--- 			on sc.department = de.department
--- left join (
--- 		SELECT 
--- 			de.department 
--- 		,	COUNT(de.employee_key) as count_people
--- 		FROM dm.dim_employee de
--- 		group by de.department
--- 		) as cou
--- 		on cou.department = de.department
--- 	) as cs
--- 		on cs.department = de2.department
--- 	) AS inner_table
--- WHERE 1=1
--- 	AND fes.employee_key = inner_table.employee_key 
--- 	AND fes.skill_key = inner_table.skill_key 
--- 	AND fes.date_key = inner_table.date_key 
--- 	AND fes.skill_level_key = inner_table.skill_level_key;
-
--- число людей в департаменте
--- count_dep_employees
-
--- ???
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN count_dep_employees int4;
-
--- UPDATE DM.fact_empl_skills AS fes 
--- SET count_dep_employees = inner_table.count_dep_employees
--- FROM (
--- 	select 
--- 		fes.employee_key
--- 	,	fes.skill_key 
--- 	,	fes.date_key 
--- 	,	fes.skill_level_key
--- 	,	coalesce(cs.count_people, 0) as count_dep_employees
--- 	from dm.fact_empl_skills fes
--- 	left join dm.dim_employee de2
--- 		on fes.employee_key = de2.employee_key
--- 	left join(
--- 		SELECT 
--- 			de.department 
--- 		,	COUNT(de.employee_key) as count_people
--- 		FROM dm.dim_employee de
--- 		group by de.department
--- 		) as cs
--- 		on cs.department = de2.department
--- 	) AS inner_table
--- WHERE 1=1
--- 	AND fes.employee_key = inner_table.employee_key 
--- 	AND fes.skill_key = inner_table.skill_key 
--- 	AND fes.date_key = inner_table.date_key 
--- 	AND fes.skill_level_key = inner_table.skill_level_key;
-
--- -- вариант с делением
-
-
-
-
-
--- уже есть ???
-
--- avg_skill_grade_position (похожая, но среднее по категориям для каждой позиции)
--- сейчас считается только по существующим скиллам ????
-
--- Создание новой пустой колонки
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN avg_skill_grade_position numeric;
-
--- -- Заполнение
--- UPDATE DM.fact_empl_skills AS fes 
--- SET avg_skill_grade_position = inner_table.avg_skill_grade_position
--- FROM (
--- 	SELECT 
--- 		ag.employee_key
--- 	, 	ag.skill_key
--- 	, 	ag.date_key
--- 	, 	ag.skill_level_key
--- 	,	ROUND(ag.avg_grade, 1) AS avg_skill_grade_position
--- 	FROM DM.fact_empl_skills AS fes
--- 	LEFT JOIN (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	AVG(fes.current_skill_level) OVER (PARTITION BY de.position, ds.skill_type) AS avg_grade 
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_skills ds
--- 			ON fes.skill_key = ds.skill_key
--- 		LEFT JOIN dm.dim_employee de
--- 			ON fes.employee_key = de.employee_key
--- 		LEFT JOIN dm.dim_skill_level dsl
--- 			ON fes.skill_level_key = dsl.skill_level_key 
--- 		WHERE dsl.skill_grade = fes.current_skill_level  -- проверка что уровень навыка - высший за все время
--- 	) AS ag 
--- 		ON fes.employee_key = ag.employee_key
--- 		AND fes.skill_key = ag.skill_key
--- ) AS inner_table
--- WHERE 1=1
--- 	AND fes.employee_key = inner_table.employee_key 
--- 	AND fes.skill_key = inner_table.skill_key;
--- 	--AND fes.date_key = inner_table.date_key 
--- 	--AND fes.skill_level_key = inner_table.skill_level_key;
-
-
-
--- avg_department_position_grade
--- средний грейд по должности внутри департамента (для 2 страницы ??)
-
--- -- Создание новой пустой колонки
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN avg_department_position_grade numeric;
-
--- -- Заполнение
--- UPDATE DM.fact_empl_skills AS fes 
--- SET avg_department_position_grade = inner_table.avg_department_position_grade
--- FROM (	
--- 	SELECT 
--- 		ag.employee_key
--- 	,	ag.skill_key
--- 	, 	ag.date_key
--- 	, 	ag.skill_level_key
--- 	,	ROUND(ag.avg_department_position_grade, 1) AS avg_department_position_grade
--- 	FROM DM.fact_empl_skills AS fes
--- 	LEFT JOIN (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	AVG(fes.current_skill_level) OVER (PARTITION BY de.department, de.position) AS avg_department_position_grade
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_skill_level dsl
--- 			ON fes.skill_level_key = dsl.skill_level_key
--- 		LEFT JOIN dm.dim_employee de 
--- 			ON fes.employee_key = de.employee_key
--- 		WHERE dsl.skill_grade = fes.current_skill_level  -- проверка что уровень навыка - высший за все время
--- 	) AS ag 
--- 		ON fes.employee_key = ag.employee_key
--- 		AND fes.skill_key = ag.skill_key
--- ) AS inner_table
--- WHERE 1=1
--- 	AND fes.employee_key = inner_table.employee_key 
--- 	AND fes.skill_key = inner_table.skill_key 
--- 	--AND fes.date_key = inner_table.date_key 
--- 	--AND fes.skill_level_key = inner_table.skill_level_key;
-
--- count_skill_department
--- Для каждого года сколько раз люди одной должности внутри одного департамента
--- и внутри 1 должности улучшили свои навыки по всем скиллам - в шт.
--- Не применяется ???
-
--- -- Создание новой пустой колонки
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN count_skill_department int4;
-
--- -- Заполнение
--- UPDATE DM.fact_empl_skills AS fes 
--- SET count_skill_department = inner_table.count_skill_department
--- FROM (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	COUNT(*) OVER (PARTITION BY dd.calendar_year, de.department, de.position) AS count_skill_department 
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_date AS dd
--- 			ON fes.date_key = dd.date_key
--- 		LEFT JOIN dm.dim_employee de
--- 			ON fes.employee_key = de.employee_key 
--- ) AS inner_table
--- WHERE 1=1
--- 	AND fes.employee_key = inner_table.employee_key 
--- 	AND fes.skill_key = inner_table.skill_key 
--- 	AND fes.date_key = inner_table.date_key 
--- 	AND fes.skill_level_key = inner_table.skill_level_key;
-
-
---- Ниже 5 похожих метрик
--- count_{grade_name}_department; grade_names = ['novice', 'junior', 'middle', 'senior', 'expert']
--- Число раз когда навык изучили на {grade_name} уровне за год по департаменту и должности
--- Применяется в нижней гистограмме на 2 странице
-
--- Сравнение с max_skill_grade_employee
-
--- -- novice
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN count_novice_department int4;
-
--- UPDATE DM.fact_empl_skills AS fes 
--- SET count_novice_department = all_cols.count_novice_department
--- FROM (
--- 	SELECT 
--- 		fes.employee_key
--- 	, 	fes.skill_key
--- 	, 	fes.date_key
--- 	, 	fes.skill_level_key
--- 	,	COALESCE(inner_table.count_novice_department, 0) AS count_novice_department
--- 	FROM dm.fact_empl_skills AS fes
--- 	LEFT JOIN dm.dim_date AS dd
--- 		ON fes.date_key = dd.date_key
--- 	LEFT JOIN (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	dd.calendar_year
--- 		,	COUNT(*) OVER (PARTITION BY dd.calendar_year, de.department, de.position, fes.skill_key) AS count_novice_department 
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_date AS dd
--- 			ON fes.date_key = dd.date_key
--- 		LEFT JOIN dm.dim_employee AS de
--- 			ON fes.employee_key = de.employee_key
--- 		left join dm.dim_skill_level dsl 
--- 			on fes.skill_level_key = dsl.skill_level_key 
--- 		WHERE fes.max_skill_grade_employee = 1
--- 			and dsl.skill_grade = max_skill_grade_employee
--- 	) AS inner_table
--- 		on fes.employee_key = inner_table.employee_key 
--- 			AND fes.skill_key = inner_table.skill_key
--- 			AND dd.calendar_year = inner_table.calendar_year
--- ) all_cols
--- WHERE 1=1
--- 	AND fes.employee_key = all_cols.employee_key 
--- 	AND fes.skill_key = all_cols.skill_key
--- 	AND fes.date_key = all_cols.date_key 
--- 	AND fes.skill_level_key = all_cols.skill_level_key;
-
--- junior
-
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN count_junior_department int4;
-
--- UPDATE DM.fact_empl_skills AS fes 
--- SET count_junior_department = all_cols.count_junior_department
--- FROM (
--- 	SELECT 
--- 		fes.employee_key
--- 	, 	fes.skill_key
--- 	, 	fes.date_key
--- 	, 	fes.skill_level_key
--- 	,	COALESCE(inner_table.count_junior_department, 0) AS count_junior_department
--- 	FROM dm.fact_empl_skills AS fes
--- 	LEFT JOIN dm.dim_date AS dd
--- 		ON fes.date_key = dd.date_key
--- 	LEFT JOIN (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	dd.calendar_year
--- 		,	COUNT(*) OVER (PARTITION BY dd.calendar_year, de.department, de.position, fes.skill_key) AS count_junior_department 
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_date AS dd
--- 			ON fes.date_key = dd.date_key
--- 		LEFT JOIN dm.dim_employee de
--- 			ON fes.employee_key = de.employee_key
--- 		left join dm.dim_skill_level dsl 
--- 			on fes.skill_level_key = dsl.skill_level_key 
--- 		WHERE fes.max_skill_grade_employee = 2
--- 			and dsl.skill_grade = max_skill_grade_employee
--- 	) AS inner_table
--- 	ON fes.employee_key = inner_table.employee_key 
--- 		AND fes.skill_key = inner_table.skill_key
--- 		AND dd.calendar_year = inner_table.calendar_year
--- ) all_cols
--- WHERE 1=1
--- 	AND fes.employee_key = all_cols.employee_key 
--- 	AND fes.skill_key = all_cols.skill_key
--- 	AND fes.date_key = all_cols.date_key 
--- 	AND fes.skill_level_key = all_cols.skill_level_key;
-
--- middle
-
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN count_middle_department int4;
-
--- UPDATE DM.fact_empl_skills AS fes 
--- SET count_middle_department = all_cols.count_middle_department
--- FROM (
--- 	SELECT 
--- 		fes.employee_key
--- 	, 	fes.skill_key
--- 	, 	fes.date_key
--- 	, 	fes.skill_level_key
--- 	,	COALESCE(inner_table.count_middle_department, 0) AS count_middle_department
--- 	from dm.fact_empl_skills AS fes
--- 	LEFT JOIN dm.dim_date AS dd
--- 		ON fes.date_key = dd.date_key
--- 	LEFT JOIN (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	dd.calendar_year
--- 		,	COUNT(*) OVER (PARTITION BY dd.calendar_year, de.department, de.position, fes.skill_key) AS count_middle_department 
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_date AS dd
--- 			ON fes.date_key = dd.date_key
--- 		LEFT JOIN dm.dim_employee de
--- 			ON fes.employee_key = de.employee_key
--- 		left join dm.dim_skill_level dsl 
--- 			on fes.skill_level_key = dsl.skill_level_key 
--- 		WHERE fes.max_skill_grade_employee = 3
--- 			and dsl.skill_grade = max_skill_grade_employee
--- 	) AS inner_table
--- 	ON fes.employee_key = inner_table.employee_key 
--- 		AND fes.skill_key = inner_table.skill_key
--- 		AND dd.calendar_year = inner_table.calendar_year
--- ) all_cols
--- WHERE 1=1
--- 	AND fes.employee_key = all_cols.employee_key 
--- 	AND fes.skill_key = all_cols.skill_key
--- 	AND fes.date_key = all_cols.date_key 
--- 	AND fes.skill_level_key = all_cols.skill_level_key;
-
--- senior
-
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN count_senior_department int4;
-
--- UPDATE DM.fact_empl_skills AS fes 
--- SET count_senior_department = all_cols.count_senior_department
--- FROM (
--- 	SELECT 
--- 		fes.employee_key
--- 	, 	fes.skill_key
--- 	, 	fes.date_key
--- 	, 	fes.skill_level_key
--- 	,	COALESCE(inner_table.count_senior_department, 0) AS count_senior_department
--- 	FROM dm.fact_empl_skills AS fes
--- 	LEFT JOIN dm.dim_date AS dd
--- 		ON fes.date_key = dd.date_key
--- 	LEFT JOIN (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	dd.calendar_year
--- 		,	COUNT(*) OVER (PARTITION BY dd.calendar_year, de.department, de.position, fes.skill_key) AS count_senior_department 
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_date AS dd
--- 			ON fes.date_key = dd.date_key
--- 		LEFT JOIN dm.dim_employee de
--- 			ON fes.employee_key = de.employee_key
--- 		left join dm.dim_skill_level dsl 
--- 			on fes.skill_level_key = dsl.skill_level_key 
--- 		WHERE fes.max_skill_grade_employee = 4
--- 			and dsl.skill_grade = max_skill_grade_employee
--- ) AS inner_table
--- on 1=1
--- 	AND fes.employee_key = inner_table.employee_key 
--- 	AND fes.skill_key = inner_table.skill_key
--- 	AND dd.calendar_year = inner_table.calendar_year
--- ) all_cols
--- WHERE 1=1
--- 	AND fes.employee_key = all_cols.employee_key 
--- 	AND fes.skill_key = all_cols.skill_key ; 
--- 	--AND fes.date_key = inner_table.date_key 
--- 	--AND fes.skill_level_key = inner_table.skill_level_key;
-
--- expert
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN count_expert_department int4;
-
--- UPDATE DM.fact_empl_skills AS fes 
--- SET count_expert_department = all_cols.count_expert_department
--- FROM (
--- 	SELECT 
--- 		fes.employee_key
--- 	, 	fes.skill_key
--- 	, 	fes.date_key
--- 	, 	fes.skill_level_key
--- 	,	COALESCE(inner_table.count_expert_department, 0) AS count_expert_department
--- 	FROM dm.fact_empl_skills AS fes
--- 	LEFT JOIN dm.dim_date AS dd
--- 		ON fes.date_key = dd.date_key
--- 	LEFT JOIN (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	dd.calendar_year
--- 		,	COUNT(*) OVER (PARTITION BY dd.calendar_year, de.department, de.position, fes.skill_key) AS count_expert_department 
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_date AS dd
--- 			ON fes.date_key = dd.date_key
--- 		LEFT JOIN dm.dim_employee de
--- 			ON fes.employee_key = de.employee_key
--- 		left join dm.dim_skill_level dsl 
--- 			on fes.skill_level_key = dsl.skill_level_key 
--- 		WHERE fes.max_skill_grade_employee = 5
--- 			and dsl.skill_grade = max_skill_grade_employee
--- 	) AS inner_table
--- 	ON fes.employee_key = inner_table.employee_key 
--- 		AND fes.skill_key = inner_table.skill_key
--- 		AND dd.calendar_year = inner_table.calendar_year
--- ) all_cols
--- WHERE 1=1
--- 	AND fes.employee_key = all_cols.employee_key 
--- 	AND fes.skill_key = all_cols.skill_key ;  
--- 	-- AND fes.date_key = inner_table.date_key 
--- 	-- AND fes.skill_level_key = inner_table.skill_level_key;
-
-
-
-
-
-
-
-	--------------------   Те же 5 метрик, но через rolling sum по годам
-
-
-
-
-
-
-
-
-
-
-
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN total_novice_department int4;
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN total_junior_department int4;
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN total_middle_department int4;
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN total_senior_department int4;
--- ALTER TABLE DM.fact_empl_skills ADD COLUMN total_expert_department int4;
-
--- -- novice  total_novice_department
-
--- UPDATE DM.fact_empl_skills AS fes 
--- SET total_novice_department = all_cols.total_novice_department
--- FROM (
--- 	SELECT 
--- 		fes.employee_key
--- 	, 	fes.skill_key
--- 	, 	fes.date_key
--- 	, 	fes.skill_level_key
--- 	,	COALESCE(inner_table.total_novice_department, 0) AS total_novice_department
--- 	FROM dm.fact_empl_skills AS fes
--- 	LEFT JOIN dm.dim_date AS dd
--- 		ON fes.date_key = dd.date_key
--- 	LEFT JOIN (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	dd.calendar_year
--- 		,	SUM(count_novice_department) OVER (PARTITION BY fes.employee_key, fes.skill_key--de.department, de.position,  
--- 										order by dd.calendar_year
--- 										rows between UNBOUNDED PRECEDING and current row) AS total_novice_department 
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_date AS dd
--- 			ON fes.date_key = dd.date_key
--- 		LEFT JOIN dm.dim_employee de
--- 			ON fes.employee_key = de.employee_key
--- 		left join dm.dim_skill_level as dsl
--- 			on fes.skill_level_key = dsl.skill_level_key
--- 		WHERE dsl.skill_grade = fes.max_skill_grade_employee -- ???
--- 	) AS inner_table
--- 	ON fes.employee_key = inner_table.employee_key 
--- 		AND fes.skill_key = inner_table.skill_key
--- 		AND dd.calendar_year = inner_table.calendar_year
--- ) all_cols
--- WHERE 1=1
--- 	AND fes.employee_key = all_cols.employee_key 
--- 	AND fes.skill_key = all_cols.skill_key ;  
--- 	-- AND fes.date_key = inner_table.date_key 
--- 	-- AND fes.skill_level_key = inner_table.skill_level_key;
-
--- -- junior  total_junior_department
-
--- UPDATE DM.fact_empl_skills AS fes 
--- SET total_junior_department = all_cols.total_junior_department
--- FROM (
--- 	SELECT 
--- 		fes.employee_key
--- 	, 	fes.skill_key
--- 	, 	fes.date_key
--- 	, 	fes.skill_level_key
--- 	,	COALESCE(inner_table.total_junior_department, 0) AS total_junior_department
--- 	FROM dm.fact_empl_skills AS fes
--- 	LEFT JOIN dm.dim_date AS dd
--- 		ON fes.date_key = dd.date_key
--- 	LEFT JOIN (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	dd.calendar_year
--- 		,	SUM(count_junior_department) OVER (PARTITION BY fes.employee_key, fes.skill_key--de.department, de.position, fes.skill_key 
--- 										order by dd.calendar_year
--- 										rows between UNBOUNDED PRECEDING and current row) AS total_junior_department 
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_date AS dd
--- 			ON fes.date_key = dd.date_key
--- 		LEFT JOIN dm.dim_employee de
--- 			ON fes.employee_key = de.employee_key
--- 	) AS inner_table
--- 		ON fes.employee_key = inner_table.employee_key 
--- 		AND fes.skill_key = inner_table.skill_key
--- 		AND dd.calendar_year = inner_table.calendar_year
--- ) all_cols
--- WHERE 1=1
--- 	AND fes.employee_key = all_cols.employee_key 
--- 	AND fes.skill_key = all_cols.skill_key ;  
--- 	-- AND fes.date_key = inner_table.date_key 
--- 	-- AND fes.skill_level_key = inner_table.skill_level_key;
-
--- -- middle   total_middle_department
- 
---  UPDATE DM.fact_empl_skills AS fes 
--- SET total_middle_department = all_cols.total_middle_department
--- FROM (
--- 	SELECT 
--- 		fes.employee_key
--- 	, 	fes.skill_key
--- 	, 	fes.date_key
--- 	, 	fes.skill_level_key
--- 	,	COALESCE(inner_table.total_middle_department, 0) AS total_middle_department
--- 	FROM dm.fact_empl_skills AS fes
--- 	LEFT JOIN dm.dim_date AS dd
--- 		ON fes.date_key = dd.date_key
--- 	LEFT JOIN (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	dd.calendar_year
--- 		,	SUM(count_middle_department) OVER (PARTITION BY fes.employee_key, fes.skill_key--de.department, de.position, fes.skill_key 
--- 										order by dd.calendar_year
--- 										rows between UNBOUNDED PRECEDING and current row) AS total_middle_department 
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_date AS dd
--- 			ON fes.date_key = dd.date_key
--- 		LEFT JOIN dm.dim_employee de
--- 			ON fes.employee_key = de.employee_key
--- 	) AS inner_table
--- 		ON fes.employee_key = inner_table.employee_key 
--- 		AND fes.skill_key = inner_table.skill_key
--- 		AND dd.calendar_year = inner_table.calendar_year
--- ) all_cols
--- WHERE 1=1
--- 	AND fes.employee_key = all_cols.employee_key 
--- 	AND fes.skill_key = all_cols.skill_key ;  
--- 	-- AND fes.date_key = inner_table.date_key 
-	-- AND fes.skill_level_key = inner_table.skill_level_key;
-
--- -- senior  total_senior_department
-
--- UPDATE DM.fact_empl_skills AS fes 
--- SET total_senior_department = all_cols.total_senior_department
--- FROM (
--- 	SELECT 
--- 		fes.employee_key
--- 	, 	fes.skill_key
--- 	, 	fes.date_key
--- 	, 	fes.skill_level_key
--- 	,	COALESCE(inner_table.total_senior_department, 0) AS total_senior_department
--- 	FROM dm.fact_empl_skills AS fes
--- 	LEFT JOIN dm.dim_date AS dd
--- 		ON fes.date_key = dd.date_key
--- 	LEFT JOIN (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	dd.calendar_year
--- 		,	SUM(count_senior_department) OVER (PARTITION BY fes.employee_key, fes.skill_key--de.department, de.position, fes.skill_key 
--- 										order by dd.calendar_year
--- 										rows between UNBOUNDED PRECEDING and current row) AS total_senior_department 
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_date AS dd
--- 			ON fes.date_key = dd.date_key
--- 		LEFT JOIN dm.dim_employee de
--- 			ON fes.employee_key = de.employee_key
--- 	) AS inner_table
--- 		ON fes.employee_key = inner_table.employee_key 
--- 		AND fes.skill_key = inner_table.skill_key
--- 		AND dd.calendar_year = inner_table.calendar_year
--- ) all_cols
--- WHERE 1=1
--- 	AND fes.employee_key = all_cols.employee_key 
--- 	AND fes.skill_key = all_cols.skill_key ;  
--- 	-- AND fes.date_key = inner_table.date_key 
--- 	-- AND fes.skill_level_key = inner_table.skill_level_key;
-
-
--- -- expert  total_expert_department
-
--- UPDATE DM.fact_empl_skills AS fes 
--- SET total_expert_department = all_cols.total_expert_department
--- FROM (
--- 	SELECT 
--- 		fes.employee_key
--- 	, 	fes.skill_key
--- 	, 	fes.date_key
--- 	, 	fes.skill_level_key
--- 	,	COALESCE(inner_table.total_expert_department, 0) AS total_expert_department
--- 	FROM dm.fact_empl_skills AS fes
--- 	LEFT JOIN dm.dim_date AS dd
--- 		ON fes.date_key = dd.date_key
--- 	LEFT JOIN (
--- 		SELECT 
--- 			fes.employee_key
--- 		, 	fes.skill_key
--- 		, 	fes.date_key
--- 		, 	fes.skill_level_key
--- 		,	dd.calendar_year
--- 		,	SUM(count_expert_department) OVER (PARTITION BY fes.employee_key, fes.skill_key--de.department, de.position, fes.skill_key 
--- 										order by dd.calendar_year
--- 										rows between UNBOUNDED PRECEDING and current row) AS total_expert_department 
--- 		FROM dm.fact_empl_skills fes
--- 		LEFT JOIN dm.dim_date AS dd
--- 			ON fes.date_key = dd.date_key
--- 		LEFT JOIN dm.dim_employee de
--- 			ON fes.employee_key = de.employee_key
--- 	) AS inner_table
--- 		ON fes.employee_key = inner_table.employee_key 
--- 		AND fes.skill_key = inner_table.skill_key
--- 		AND dd.calendar_year = inner_table.calendar_year
--- ) all_cols
--- WHERE 1=1
--- 	AND fes.employee_key = all_cols.employee_key 
--- 	AND fes.skill_key = all_cols.skill_key ;  
--- 	-- AND fes.date_key = inner_table.date_key 
--- 	-- AND fes.skill_level_key = inner_table.skill_level_key;
